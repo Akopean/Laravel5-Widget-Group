@@ -1,16 +1,16 @@
 {
-  "name": "laravel5-widget-group",
+  "name": "laravel5WidgetGroup",
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Akopean/Laravel5-Widget-Group.git"
+    "url": "git+https://github.com/Akopean/Laravel5WidgetGroup.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Akopean/Laravel5-Widget-Group/issues"
+    "url": "https://github.com/Akopean/Laravel5WidgetGroup/issues"
   },
-  "homepage": "https://github.com/Akopean/Laravel5-Widget-Group#readme",
+  "homepage": "https://github.com/Akopean/Laravel5WidgetGroup#readme",
   "description": "",
   "private": true,
   "scripts": {
@@ -30,7 +30,10 @@
     "jquery": "^3.1.1",
     "laravel-mix": "0.*",
     "lodash": "^4.17.4",
+    "material-design-icons": "^3.0.1",
+    "popper.js": "^1.14.3",
     "slugify": "^1.1.0",
+    "sortablejs": "^1.7.0",
     "tinymce": "^4.6.3",
     "toastr": "^2.1.2"
   }

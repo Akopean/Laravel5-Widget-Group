@@ -1,0 +1,109 @@
+@import "node_modules/toastr/build/toastr";
+@import "node_modules/bootstrap/dist/css/bootstrap.min";
+
+
+body {
+	font-family: 'Open Sans', sans-serif;
+}
+
+
+.voyager.widgets {
+	display: block;
+}
+
+.widget-top {
+	background: #ececec;
+	color: #23282d;
+}
+
+.widget-list #left #widget,
+.widget-inner #widget {
+	margin-bottom: 20px;
+}
+
+.widget-title h3,
+.widget-title h4 {
+	margin: 0;
+	padding: 15px;
+	font-size: 1em;
+	line-height: 1;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.widget-title-action {
+	float: right;
+	position: relative;
+}
+
+.widget-title-action .caret {
+	margin-left: 0;
+}
+
+.widget-top .widget-action {
+	border: 0;
+	margin: 0;
+	padding: 11px 15px;
+	background: 0 0;
+	cursor: pointer;
+	outline: 0;
+}
+
+.widget-holder .widget .widget-top {
+	cursor: pointer;
+}
+
+.widget-inner {
+	min-height: 30px;
+	min-width: 100%;
+	border: dashed 1px;
+}
+
+.widget-inner .dropdown-menu {
+	margin-top: 0;
+	border: none;
+}
+
+.widget-inner > .open > .dropdown-menu {
+	position: inherit;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	float: none;
+}
+
+div.widget_clone {
+	position: relative;
+}
+
+.widget-inside {
+	width: 100%;
+	background-color: #fdfdfd;
+	margin-right: -15px;
+	margin-left: -15px;
+	box-shadow: 0 4px 5px rgba(0,0,0,0.2);
+}
+
+div.widget_clone.open .widget-inside {
+	position: absolute;
+	will-change: transform;
+	top: 0px;
+	left: 0px;
+	transform: translate3d(15px, 45px, 0px);
+	display: block;
+}
+
+.mce-container iframe {
+	height: 220px !important;
+}
+
+ul.radio {
+	margin-left: 0;
+	padding-left: 0;
+	list-style: none;
+}
