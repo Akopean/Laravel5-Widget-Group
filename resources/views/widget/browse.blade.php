@@ -120,18 +120,11 @@
         });
         // widget form send
         $('.widgetForm').submit(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             const $this = $(this);
-            const value = {};
-;
-            $this.serializeArray().forEach( function (str) {
-                value[str['name']] = str['value'];
-            });
-            //console.log($this.serializeArray());
 
-            const data = {
-                'id'    : $this.children('input[name="id"]').val(),
-                'value' : JSON.stringify(value)
-            };
+            data = new FormData($this[0]);
 
             window.axios({
                 method: 'post',
@@ -141,7 +134,7 @@
                 data  : data
             })
                 .then(function (response) {
-                    console.log('server:', response);
+                   // console.log('server:', response);
 
                     /*    // here we will handle errors and validation messages
                      if ( ! data.success) {
@@ -172,7 +165,6 @@
                     console.log(error);
                     toastr.error('Error', 'Inconceivable!');
                 });
-            event.preventDefault();
         });
     </script>
 @stop

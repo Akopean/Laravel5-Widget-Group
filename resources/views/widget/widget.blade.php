@@ -13,8 +13,9 @@
     </div>
     <div class="widget-inside row dropdown-menu">
         <div class="col-md-12">
-            <form method="post" class="widgetForm">
+            <form method="post" class="widgetForm" enctype="multipart/form-data">
                 <input type="hidden" @if(!empty($id)) value="{{ $id }}" @endif name="id">
+
                 @foreach($value['fields'] as $key => $val)
                     @if ($val['type'] == "text")
                         @include('widgets::particles.text')
@@ -24,12 +25,14 @@
                         @include('widgets::particles.text_area')
                     @elseif($val['type'] == "rich_text_box")
                         @include('widgets::particles.rich_text_box')
-                    @elseif($val['type'] == "image" || $val['type'] == "file")
-                        @include('widgets::particles.image_file')
                     @elseif($val['type'] == "checkbox")
                         @include('widgets::particles.checkbox')
                     @elseif($val['type'] == "radio")
                         @include('widgets::particles.radio')
+                    @elseif($val['type'] == "image")
+                        @include('widgets::particles.image')
+                    @elseif($val['type'] == "file")
+                        @include('widgets::particles.file')
                     @endif
                 @endforeach
                 <button type="button" id="widgetDelete" data-widgetId="@if(!empty($id)){{ $id }}@endif" class="btn btn-danger pull-right">{{ _t('widget.delete', 'Delete') }}</button>

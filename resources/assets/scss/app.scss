@@ -6,7 +6,35 @@ body {
 	font-family: 'Open Sans', sans-serif;
 }
 
-
+.form-group {
+	label {
+		display: block;
+	}
+	.input-group-prepend, .input-group-append {
+		float: left;
+		height: 100%;
+		padding: 6px 7px;
+		background: #F4F4F4;
+		border: #DFDFDF solid 1px;
+		margin-right: -1px;
+	}
+	.input-group-append {
+		float: right;
+	}
+	.input-group-wrap {
+		position: relative;
+		overflow: hidden;
+		border-radius: 0;
+	}
+	.input-group-prepend ~ .input-group-wrap .form-control {
+		border-bottom-left-radius: 0;
+		border-top-left-radius: 0;
+	}
+	.input-group-append ~ .input-group-wrap .form-control {
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+	}
+}
 .voyager.widgets {
 	display: block;
 }

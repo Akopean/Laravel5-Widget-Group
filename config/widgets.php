@@ -26,8 +26,22 @@ return [
     |
     */
 
-    'models' => [
-        //'namespace' => 'App\\',
+   /* 'models' => [
+        'namespace' => 'Akopean\laravel5WidgetsGroup\Widgets',
+    ],
+*/
+    /*
+    |--------------------------------------------------------------------------
+    | Storage Config
+    |--------------------------------------------------------------------------
+    |
+    | Here you can specify attributes related to your application file system
+    |
+    */
+
+    'storage' => [
+        'disk' => 'public',
+        'slug' => 'widgets'
     ],
 
     /*
@@ -65,76 +79,55 @@ return [
     |
     */
     'widgets' => [
-        'asd' => [
-            'namespace' => 'App\Widgets\TextWidget',
-            'placeholder' => 'asdasdText Widget',
-            'desc' => 'Arbitrary text.',
-            'fields' => [
-                'title' => [
-                    'type' => 'text',
-                ],
-                'body' => [
-                    'type' => 'rich_text_box',
-                ],
-            ]
-        ],
         'TextWidget' => [
-            'namespace' => 'App\Widgets\TextWidget',
+            'namespace' => 'Akopean\laravel5WidgetsGroup\widgets\TextWidget',
             'placeholder' => 'Text Widget',
-            'desc' => 'Arbitrary text.',
             'fields' => [
-                'title' => [
+              'title' => [
                     'type' => 'text',
+                    'placeholder' => 'text field',
+                    'default' => 'Default text',
+                    'prepend' => '$',
+                    'append' => '.kg'
                 ],
-                'body' => [
+             /*    'body' => [
                     'type' => 'text_area',
+                    'default' => 'text area',
+                    'placeholder' => 'text area',
                 ],
-            ]
-        ],
-        'RecentNews' => [
-            'namespace' => 'App\Widgets\RecentNews',
-            'placeholder' => 'Recent News',
-            'desc' => 'Arbitrary text.',
-            'fields' => [
-                'count' => [
+                'bodys1' => [
+                    'type' => 'rich_text_box',
+                    'default' => 'Default rich text box',
+                ],
+                'number' => [
                     'type' => 'number',
+                    'default' => '5',
+                    'placeholder' => 'text field',
+                    'prepend' => '$',
+                    'append' => '.kg'
+                ],*/
+                'filesadfhfh' => [
+                    'type' => 'file',
+                    'min' => '12',//MB
+                    'max' => '200',//MB
+                    'file_types' => '.txt .jpg .png',
                 ],
-            ]
-        ],
-        'SocialLinks' => [
-            'namespace' => 'App\Widgets\SocialLinks',
-            'placeholder' => 'Social Links',
-            'desc' => 'Arbitrary text.',
-            'fields' => [
-                'twitter' => [
-                    'type' => 'text',
-                ],
-                'facebook' => [
-                    'type' => 'text',
-                ],
-                'instagram' => [
-                    'type' => 'text',
-                ],
-            ]
-        ],
-        'ContactInfo' => [
-            'namespace' => 'App\Widgets\ContactInfo',
-            'placeholder' => 'Contact Information',
-            'desc' => 'Arbitrary text.',
-            'fields' => [
-                'contact_email' => [
-                    'type' => 'text',
-                ],
-                'contact_phone' => [
-                    'type' => 'text',
-                ],
-                'contact_address' => [
-                    'type' => 'text',
-                ],
-                'contact_desc' => [
-                    'type' => 'text',
+                'filefhfh' => [
+                    'type' => 'file',
+                    'min' => '12',//MB
+                    'max' => '200',//MB
+                    'file_types' => '.txt .jpg .png',
                 ],
             ]
         ],
     ],
 ];
+
+/*            $allowedImageMimeTypes = [
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'image/bmp',
+                'image/svg+xml',
+            ];
+*/

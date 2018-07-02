@@ -5,6 +5,7 @@ namespace Akopean\laravel5WidgetsGroup;
 use Illuminate\Support\ServiceProvider;
 use App;
 use Blade;
+use Illuminate\Http\Request;
 
 
 class WidgetServiceProvider extends ServiceProvider
@@ -50,6 +51,11 @@ class WidgetServiceProvider extends ServiceProvider
         App::singleton('widget', function(){
             return new \Akopean\laravel5WidgetsGroup\Widget();
         });
+
+        App::singleton('WidgetGroup', function(){
+            return new WidgetGroup();
+        });
+
         $this->loadHelpers();
      }
 

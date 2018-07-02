@@ -19,6 +19,7 @@
     @yield('page_header')
 <!-- START THE MAIN CONTENT HERE -->
     @yield('content')
+    <?php app('WidgetGroup')->run('leftSidebar'); ?>
 </div>
 <script type="text/javascript" src="{{ widgets_asset('js/app.js') }}"></script>
 @yield('javascript')

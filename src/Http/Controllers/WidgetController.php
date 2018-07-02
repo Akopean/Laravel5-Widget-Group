@@ -2,13 +2,12 @@
 
 namespace Akopean\laravel5WidgetsGroup\Http\Controllers;
 
+
 use App\Http\Controllers\Controller;
 use Akopean\laravel5WidgetsGroup\Models\Widget;
 use Illuminate\Http\Request;
+use \Akopean\laravel5WidgetsGroup\File;
 
-//use App\Services\WidgetService;
-//use TCG\Voyager\Facades\Voyager;
-use Response;
 
 class WidgetController extends Controller
 {
@@ -23,41 +22,32 @@ class WidgetController extends Controller
         $widgets = Widget::all();
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index(Request $request)
     {
         return view('widgets::widget.browse', ['widgets' => $this->widgets]);
     }
 
-    public function asd(Request $request)
-    {
-        /*  $validator = \Validator::make($request->all(), [
-              'widget' => 'required',
-          ]);
-
-          if ($validator->fails()) {
-              return response()->json(['errors'=>$validator->errors()]);
-          }
-
-          $this->widget = new WidgetService($request['widget']);
-
-          if($this->widget->hasErrors()) {
-              return response()->json($this->widget->getErrors());
-          }
-
-          return response()->json($this->widget->getField());*/
-        return "asdad";
-    }
-
+    /**
+     * @param Request $request
+     * @return mixed
+     */
     public function update(Request $request)
     {
-        $validatedData = $request->validate([
-            'id' => 'required|integer',
-            'value' => 'json',
-        ]);
+        $file = [];
+        $validatedData = $request->post();
+        $files = $request->file();
 
         $widget = Widget::findOrFail($validatedData['id']);
 
-        $widget->value = $request->input('value');
+        if($files) {
+            $file = (new File())->upload($request);
+        }
+
+        $widget->value = json_encode(array_merge($validatedData, $file));
 
         $widget->save();
 
