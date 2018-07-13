@@ -26,10 +26,10 @@ return [
     |
     */
 
-   /* 'models' => [
-        'namespace' => 'Akopean\laravel5WidgetsGroup\Widgets',
-    ],
-*/
+    /* 'models' => [
+         'namespace' => 'Akopean\laravel5WidgetsGroup\Widgets',
+     ],
+ */
     /*
     |--------------------------------------------------------------------------
     | Storage Config
@@ -41,9 +41,35 @@ return [
 
     'storage' => [
         'disk' => 'public',
-        'slug' => 'widgets'
+        'slug' => 'widgets',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | File Configuration
+    |--------------------------------------------------------------------------
+    |
+    */
+    'file' => [
+        // Valid file mimes and size for uploading
+        'rules' => 'required|mimes:jpeg,jpg,png,svg | max:8192',
+        'messages' => [
+            'file.*.required' => 'Please upload an image',
+            'file.*.mimes' => 'Only jpeg,png and bmp images are allowed',
+            'file.*.max' => 'Sorry! Maximum allowed size for an image is 20MB',
+        ],
+    ],
+
+    'image' => [
+        'path' => [
+            'full_path' => 'widgets/',
+            'icon_path' => 'widgets/icon/',
+        ],
+        'size' => [
+            'full_size' => 2048,
+            'icon_size' => 200
+        ]
+    ],
     /*
     |--------------------------------------------------------------------------
     | Path to the Widgets Assets
@@ -68,9 +94,10 @@ return [
         'rightSidebar' => 'Right Sidebar',
         'footer' => 'Footer',
         'after_header' => 'After Header',
+        'inactive' => 'asdad'
     ],
 
-	/*
+    /*
     |--------------------------------------------------------------------------
     | Custom Widgets config
     |--------------------------------------------------------------------------
@@ -83,42 +110,47 @@ return [
             'namespace' => 'Akopean\laravel5WidgetsGroup\widgets\TextWidget',
             'placeholder' => 'Text Widget',
             'fields' => [
-              'title' => [
+                'title' => [
                     'type' => 'text',
                     'placeholder' => 'text field',
                     'default' => 'Default text',
                     'prepend' => '$',
-                    'append' => '.kg'
+                    'append' => '.kg',
                 ],
-             /*    'body' => [
-                    'type' => 'text_area',
-                    'default' => 'text area',
-                    'placeholder' => 'text area',
+                /*    'body' => [
+                       'type' => 'text_area',
+                       'default' => 'text area',
+                       'placeholder' => 'text area',
+                   ],
+                   'bodys1' => [
+                       'type' => 'rich_text_box',
+                       'default' => 'Default rich text box',
+                   ],
+                   'number' => [
+                       'type' => 'number',
+                       'default' => '5',
+                       'placeholder' => 'text field',
+                       'prepend' => '$',
+                       'append' => '.kg'
+                   ],*/
+                'f' => [
+                    'type' => 'file',
+                    'min' => '1',//MB
+                    'max' => '200',//MB
+                    'multiple' => true, // default: false
+                    'rules' => 'mimes:txt | max:2048',
                 ],
-                'bodys1' => [
-                    'type' => 'rich_text_box',
-                    'default' => 'Default rich text box',
-                ],
-                'number' => [
-                    'type' => 'number',
-                    'default' => '5',
-                    'placeholder' => 'text field',
-                    'prepend' => '$',
-                    'append' => '.kg'
+              /*  'i' => [
+                    'type' => 'image',
+                    'min' => '1',//MB
+                    'max' => '200',//MB
+                    'multiple' => true, // default: false
+                    'rules' => 'mimes:jpeg,jpg | max:2048',
+                    'size' => [
+                        'full_size' => 1024
+                    ]
                 ],*/
-                'filesadfhfh' => [
-                    'type' => 'file',
-                    'min' => '12',//MB
-                    'max' => '200',//MB
-                    'file_types' => '.txt .jpg .png',
-                ],
-                'filefhfh' => [
-                    'type' => 'file',
-                    'min' => '12',//MB
-                    'max' => '200',//MB
-                    'file_types' => '.txt .jpg .png',
-                ],
-            ]
+            ],
         ],
     ],
 ];

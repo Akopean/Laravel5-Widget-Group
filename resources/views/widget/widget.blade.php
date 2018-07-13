@@ -15,7 +15,6 @@
         <div class="col-md-12">
             <form method="post" class="widgetForm" enctype="multipart/form-data">
                 <input type="hidden" @if(!empty($id)) value="{{ $id }}" @endif name="id">
-
                 @foreach($value['fields'] as $key => $val)
                     @if ($val['type'] == "text")
                         @include('widgets::particles.text')

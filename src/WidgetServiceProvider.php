@@ -3,10 +3,10 @@
 namespace Akopean\laravel5WidgetsGroup;
 
 use Illuminate\Support\ServiceProvider;
+use Akopean\laravel5WidgetsGroup\Providers\WidgetEventServiceProvider;
 use App;
 use Blade;
 use Illuminate\Http\Request;
-
 
 class WidgetServiceProvider extends ServiceProvider
 {
@@ -47,6 +47,9 @@ class WidgetServiceProvider extends ServiceProvider
 
     public function register()
     {
+        App::register(WidgetEventServiceProvider::class);
+
+        App::register(\Intervention\Image\ImageServiceProvider::class);
 
         App::singleton('widget', function(){
             return new \Akopean\laravel5WidgetsGroup\Widget();

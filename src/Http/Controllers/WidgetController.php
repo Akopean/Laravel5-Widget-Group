@@ -3,23 +3,28 @@
 namespace Akopean\laravel5WidgetsGroup\Http\Controllers;
 
 
+use Akopean\laravel5WidgetsGroup\Events\UpdateWidgetEvent;
+use Akopean\laravel5WidgetsGroup\Repository\FileRepository;
 use App\Http\Controllers\Controller;
 use Akopean\laravel5WidgetsGroup\Models\Widget;
 use Illuminate\Http\Request;
-use \Akopean\laravel5WidgetsGroup\File;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Response;
 
 
 class WidgetController extends Controller
 {
     protected $config;
     protected $widgets;
+    protected $file;
 
     /**
      * WidgetController constructor.
+     * @param FileRepository $fileRepository
      */
-    public function __construct()
+    public function __construct(FileRepository $fileRepository)
     {
-        $widgets = Widget::all();
+        $this->file = $fileRepository;
     }
 
     /**
@@ -37,21 +42,49 @@ class WidgetController extends Controller
      */
     public function update(Request $request)
     {
-        $file = [];
-        $validatedData = $request->post();
-        $files = $request->file();
+        $widget = Widget::findOrFail($request->post()['id']);
+
+        return event(new UpdateWidgetEvent($widget, $request));
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function fileUpload(Request $request)
+    {
+        return '{"success":true}';
+
+
+        $validatedData = $request->validate([
+            'id' => 'required|integer',
+        ]);
 
         $widget = Widget::findOrFail($validatedData['id']);
 
-        if($files) {
-            $file = (new File())->upload($request);
+        $file = Input::all();
+        unset($file['id']);
+
+        if (!count($file)) {
+            return Response::json([
+                'error' => true,
+                'message' => 'Server error while uploading',
+                'code' => 500,
+            ], 500);
         }
 
-        $widget->value = json_encode(array_merge($validatedData, $file));
+        $response = $this->file->upload($file, $widget);
 
-        $widget->save();
+        return $response;
+    }
 
-        return $widget->toJson();
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function fileDelete(Request $request, $uuid)
+    {
+        return response()->json(['success' => 'success'], 200);
     }
 
     /**
@@ -92,7 +125,7 @@ class WidgetController extends Controller
      */
     public function create(Request $request)
     {
-       // return abort(500, 'Unauthorized action.');
+        // return abort(500, 'Unauthorized action.');
         $validatedData = $request->validate([
             'index' => 'required|integer',
             'group' => 'required',

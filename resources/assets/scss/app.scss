@@ -1,6 +1,6 @@
 @import "node_modules/toastr/build/toastr";
 @import "node_modules/bootstrap/dist/css/bootstrap.min";
-
+@import "node_modules/fine-uploader/jquery.fine-uploader/fine-uploader-gallery";
 
 body {
 	font-family: 'Open Sans', sans-serif;
@@ -134,4 +134,15 @@ ul.radio {
 	margin-left: 0;
 	padding-left: 0;
 	list-style: none;
+}
+
+
+// File Uploader
+
+.qq-gallery.qq-uploader {
+	padding: 0;
+}
+
+.qq-gallery .qq-upload-button {
+	width: 100%;
 }

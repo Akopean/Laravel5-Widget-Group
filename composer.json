@@ -24,7 +24,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Akopean\\laravel5WidgetsGroup\\": "src"
+            "Akopean\\laravel5WidgetsGroup\\": "src/"
         }
     }
 }

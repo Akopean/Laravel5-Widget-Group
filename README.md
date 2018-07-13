@@ -6,8 +6,21 @@
 
 After creating your new Laravel application you can include package with the following command: 
 
-```bash
+```
 composer require *****
+```
+
+###config/app.php
+
+```
+// ... other service providers
+Akopean\laravel5WidgetsGroup\WidgetServiceProvider::class,
+```
+
+Then publish the configuration
+
+```
+php artisan vendor:publish
 ```
 
 ### 2. Add the DB Credentials & APP_URL
@@ -20,6 +33,33 @@ DB_DATABASE=homestead
 DB_USERNAME=homestead
 DB_PASSWORD=secret
 ```
+
+Create table Widget
+```
+php artisan migrate
+```
+
+### 2. Create routes
+
+Somewhere in your routes file(s)
+
+```
+ \Akopean\laravel5WidgetsGroup\Widget::routes();
+```
+or
+```
+Route::group(['prefix' => 'widget'], function () {
+    \Akopean\laravel5WidgetsGroup\Widget::routes();
+});
+```
+
+## Configuration
+
+
+
+
+
+
 
 ## Additional Field Options
 

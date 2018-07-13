@@ -1,19 +1,29 @@
-module.exports = (function () {
-    "use strict";
-    const version = 0.3;
-    console.log('Init Laravel Widget!!! version: ', version);
-    const w = {};
+window.jQuery = require('jquery');
+"use strict";
+
+/**
+ * Widget Class
+ */
+export default class Widget {
+
+    /**
+     * @param {string} el - HTMl Element selector
+     * @param {object} settings
+     */
+    constructor(el, settings) {
+        this.tinyMceInit(el, settings);
+    }
 
     /**
      * Init TinyMCE Editor
-     * string el    // element selector
-     * object setting // initialization params
+     * @param {string} el -  HTMl Element selector
+     * @param {object} settings - init. params
      */
-    w.tinyMceInit = function (el, setting = {}) {
-        window.tinymce.init(Object.assign(setting, {
+    tinyMceInit(el, settings = {}) {
+        window.tinymce.init(Object.assign(settings, {
             menubar: false,
             selector: el,
-            skin: 'voyager',
+            skin: 'widget',
             //cache_suffix: '?v=4.1.6',
             min_height: 250,
             resize: 'vertical',
@@ -29,12 +39,15 @@ module.exports = (function () {
             toolbar: 'bold italic underline | link | code',
             convert_urls: false,
         }));
-    };
+    }
 
     /**
      * ReInstall TinyMCE Editor
+     * @param $this
+     * @returns {Promise}
      */
-    w.tinyMceReInstall = function ($this) {
+    tinyMceReInstall($this) {
+        let that = this;
         return new Promise((resolve, reject) => {
             let settings = [];
             let editorIds = [];
@@ -54,18 +67,101 @@ module.exports = (function () {
                 // Re-initialize editors
                 editors.each(function () {
                     let setting = settings[this.id];
-                    w.tinyMceInit('.widgetRichTextBox', setting);
+                    that.tinyMceInit('.widgetRichTextBox', setting);
                 });
             }
         });
-    };
+    }
+
+    /**
+     * Send Widget form
+     * @param {string} el - Html Element selector
+     * @param {string} route - address to delete
+     */
+    sendWidgetForm(el, route) {
+        $(el).submit(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const $this = $(this);
+
+            data = new FormData($this[0]);
+
+            window.axios({
+                method: 'post',
+                cache: false,
+                contentType: 'multipart/form-data',
+                url: route,
+                data: data
+            }).then(function (response) {
+                // console.log('server:', response);
+
+                /*    // here we will handle errors and validation messages
+                 if ( ! data.success) {
+
+                 // handle errors for name ---------------
+                 if (data.errors.name) {
+                 $('#name-group').addClass('has-error'); // add the error class to show red input
+                 $('#name-group').append('<div class="help-block">' + data.errors.name + '</div>'); // add the actual error message under our input
+                 }
+
+                 // handle errors for email ---------------
+                 if (data.errors.email) {
+                 $('#email-group').addClass('has-error'); // add the error class to show red input
+                 $('#email-group').append('<div class="help-block">' + data.errors.email + '</div>'); // add the actual error message under our input
+                 }
+
+                 // handle errors for superhero alias ---------------
+                 if (data.errors.superheroAlias) {
+                 $('#superhero-group').addClass('has-error'); // add the error class to show red input
+                 $('#superhero-group').append('<div class="help-block">' + data.errors.superheroAlias + '</div>'); // add the actual error message under our input
+                 }
+                 }
+                 */
+                $this.closest('#widget').removeClass("open");
+                toastr.success('Saved');
+            })
+                .catch(function (error) {
+                    console.log(error);
+                    toastr.error('Error', 'Inconceivable!');
+                });
+        })
+    }
+
+    /**
+     * Delete Widget
+     * @param {string} el - Html Element selector
+     * @param {string} route - address to delete
+     */
+    deleteWidget(el, route) {
+        // Widget Form Delete
+        window.jQuery(document).on('click', el, function (e) {
+            const $this = $(this);
+            const data = {
+                'id': $this.parent('.widgetForm').children('input[name="id"]').val(),
+            };
+            window.axios({
+                method: 'post',
+                cache: false,
+                url: route,
+                data: data
+            }).then(function (response) {
+                $this.closest('#widget').toggleClass("open");
+                $this.closest('#widget').remove();
+                toastr.success('Deleted');
+            }).catch(function (error) {
+                console.log(error);
+                toastr.error('Error', 'Inconceivable!');
+            });
+        });
+    }
 
     /**
      * Create Widget Sortable Left Group;
-     * string el    // element selector
-     * url // send server link
+     * @param {string} el - Html element selector
+     * @param {string} route - address to send
      */
-    w.createLeftGroup = function (el, url) {
+    createLeftGroup(el, route) {
+        let that = this;
         //const el = document.getElementById('left');
         //   url   : '{{ route('admin.widget.create') }}',
         window._sortable.create(el, {
@@ -93,9 +189,9 @@ module.exports = (function () {
                 $(itemEl).find('[data-rich="richTextBox"]').each(function () {
                     let cls = 'class' + Math.floor((Math.random() * 1000) + 1);
                     $(this).addClass(cls).addClass('widgetRichTextBox');
-                    w.tinyMceInit('.' + cls);
+                    that.tinyMceInit('.' + cls);
                 });
-                //console.log(el);
+
                 const data = {
                     'index': evt.newIndex,
                     'group': $this.data('group'),
@@ -104,7 +200,7 @@ module.exports = (function () {
 
                 window.axios({
                     method: 'post',
-                    url: url,
+                    url: route,
                     data: data
                 }).then(function (response) {
                     // console.log(response);
@@ -122,10 +218,17 @@ module.exports = (function () {
                 });
             }
         });
-    };
+    }
 
-    // Create Widget Sortable Group;
-    w.createGroup = function ($group, $value, urlDrag, urlSort) {
+    /**
+     * Create Widget Sortable Group
+     * @param $group
+     * @param $value
+     * @param urlDrag - server drag adress
+     * @param urlSort - server sort adress
+     */
+    createGroup($group, $value, urlDrag, urlSort) {
+        let that = this;
         window._sortable.create(document.getElementById($group), {
             group: {
                 name: 'left',
@@ -156,7 +259,7 @@ module.exports = (function () {
                     url: urlDrag,
                     data: data
                 }).then(function (response) {
-                    w.tinyMceReInstall($this);
+                    that.tinyMceReInstall($this);
                 }).then(function (response) {
                     toastr.success('Saved');
                 }).catch(function (error) {
@@ -192,7 +295,7 @@ module.exports = (function () {
                     url: urlSort,
                     data: data
                 }).then(function (response) {
-                    w.tinyMceReInstall($this);
+                    that.tinyMceReInstall($this);
                 }).then(function (response) {
                     toastr.success('Saved');
                 }).catch(function (error) {
@@ -200,6 +303,5 @@ module.exports = (function () {
                 });
             }
         });
-    };
-    return w;
-})();
+    }
+};

@@ -22,4 +22,6 @@ Route::group(['as' => 'widget.'], function () {
     Route::post('widget/create',['uses'=> $namespacePrefix.'WidgetController@create'])->name('widget.create');
     Route::post('widget/sort',['uses'=> $namespacePrefix.'WidgetController@sort'])->name('widget.sort');
     Route::post('widget/drag',['uses'=> $namespacePrefix.'WidgetController@drag'])->name('widget.drag');
+    Route::post('widget/fileUpload',['uses'=> $namespacePrefix.'WidgetController@fileUpload'])->name('widget.fileUpload');
+    Route::delete('widget/fileDelete/{uuid}',['uses'=> $namespacePrefix.'WidgetController@fileDelete'])->name('widget.fileDelete');
 });

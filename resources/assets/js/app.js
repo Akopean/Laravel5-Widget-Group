@@ -1,16 +1,23 @@
 window.jQuery = window.$ = require('jquery');
 window.axios = require('axios');
 window.toastr = require('toastr');
+
+import FileUploader from './file-upload';
+import tinymce from 'tinymce/tinymce';
+import 'tinymce/themes/modern/theme';
+import Widget from './widget';
+
 require('bootstrap');
 //window.TinyMCE = window.tinymce  = require('tinymce');
 //require('./widgets_tinymce');
-import tinymce from 'tinymce/tinymce';
-import 'tinymce/themes/modern/theme';
+
 
 
 window.tinyMCE = window.tinymce = tinymce;
 window._sortable = require('sortablejs/Sortable');
-window.widget = require('./widget');
+window.Widget = Widget;
+window.FileUploader = FileUploader;
+
 
 window.$(document).ready(function () {
     window.$.ajaxSetup({
@@ -25,4 +32,3 @@ window.$(document).on('click', '[data-toggle="widget-dropdown"]', function (e) {
     jQuery(this).parent().toggleClass('open');
     return false;
 });
-

@@ -2,6 +2,15 @@
 
 @section('page_title', ' Widgets')
 
+@section('css')
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- App CSS -->
+    <link rel="stylesheet" href="{{ widgets_asset('css/app.css') }}">
+@stop
+
 @section('page_header')
     <div class="row">
         <div class="col-md-12">
@@ -55,6 +64,14 @@
                         <div class="col-md-6">
                             <h3> {{ $value }} </h3>
                             <div class="widget-inner" data-group="{{ $group }}" id="{{ $group }}">
+                                @foreach(\Akopean\laravel5WidgetsGroup\Models\Widget::where('group', '=', $group)->orderBy('index', 'ASC')->get() as $widget)
+                                    @include('widgets::widget.widget', [
+                                        'id' => $widget['id'],
+                                        'widget' => json_decode($widget['value']),
+                                        'name' => $widget['name'],
+                                        'value' => config('widgets')['widgets'][$widget['name']]
+                                    ])
+                                @endforeach
                             </div>
                         </div>
                     @endforeach
@@ -65,106 +82,60 @@
 @stop
 
 
-
-@section('css')
-
-@stop
-
 @section('javascript')
     <script>
-        //init all Tiny editor
-        widget.tinyMceInit('textarea.widgetRichTextBox');
+        window.route = {
+            'file_upload': '{{ route('widget.widget.fileUpload') }}',
+            'file_delete': '{{ route('widget.widget.fileDelete', '') }}',
+            'widget_create': '{{ route('widget.widget.create') }}',
+            'widget_drag': '{{ route("widget.widget.drag") }}',
+            'widget_sort': '{{ route("widget.widget.sort") }}',
+            'widget_delete': '{{ route('widget.widget.delete') }}'
+        };
+    </script>
+    <script src="{{ widgets_asset('js/app.js') }}"></script>
+    <script>
+        /// FileUploader
+        fileUploader = new FileUploader({
+            'el': $('.fine-uploader-gallery'),
+            'template': 'qq-template-gallery',
+            'route': {
+                'upload': route['file_upload'],
+                'delete': route['file_delete'],
+            },
+            'token': '{{ csrf_token() }}'
+        });
 
+        fileUploader.qq.on('upload', function (event, id, name) {
+            //let fileItemContainer = $(this).fineUploader('getItemByFileId', id);
+            let fieldName = $(this).data('fieldName');
+            let fieldId = $(this).parent('.widgetForm').children('input[name="id"]').val();
+
+            $(this).fineUploader('setParams', {name: fieldName, id: fieldId});
+        }).on('submitted', function (event, id, name) {
+            console.log('submitted')
+        }).on('delete', function (event, id, name) {
+            console.log('deleted')
+        });
+        /// END FileUploader
+
+        //Wiget Init
+        const widget = new Widget('textarea.widgetRichTextBox');
+
+        //Create Default(left) Group - serves as a constructor
         const el = document.getElementById('left');
-        widget.createLeftGroup(el, '{{ route('widget.widget.create') }}');
+        widget.createLeftGroup(el, route.widget_create);
 
-        // Create Widget Sortable Group;
+        // Create All Sortable Widget Group;
         @foreach(config('widgets')['group'] as $group => $value)
-            widget.createGroup('{{ $group }}', '{{ $value }}', '{{ route("widget.widget.drag") }}', '{{ route("widget.widget.sort") }}');
-        @endforeach
-
-        // Insert Widgets from widget zone
-        @foreach(config('widgets')['group'] as $group => $value)
-
-            $html = $('#{{$group}}');
-            @foreach(\Akopean\laravel5WidgetsGroup\Models\Widget::where('group', '=', $group)->orderBy('index', 'ASC')->get() as $widget)
-                        $html.append(`@include('widgets::widget.widget', [
-                            'id' => $widget['id'],
-                            'widget' => json_decode($widget['value']),
-                            'name' => $widget['name'],
-                            'value' => config('widgets')['widgets'][$widget['name']]
-                        ])`);
-            @endforeach
+            widget.createGroup('{{ $group }}', '{{ $value }}', route.widget_drag, route.widget_sort);
         @endforeach
 
         // Widget Form Delete
-        window.$(document).on('click', '.widgetForm #widgetDelete', function (e) {
-            const $this = $(this);
-            const data = {
-                'id'    : $this.parent('.widgetForm').children('input[name="id"]').val(),
-            };
+        widget.deleteWidget('.widgetForm #widgetDelete', route.widget_delete);
 
-            window.axios({
-                method: 'post',
-                cache: false,
-                url   : '{{ route('widget.widget.delete') }}',
-                data  : data
-            }) .then(function (response) {
-                $this.closest('#widget').toggleClass("open");
-                $this.closest('#widget').remove();
-                toastr.success('Deleted');
-            }) .catch(function (error) {
-                    console.log(error);
-                    toastr.error('Error', 'Inconceivable!');
-            });
-        });
-        // widget form send
-        $('.widgetForm').submit(function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const $this = $(this);
-
-            data = new FormData($this[0]);
-
-            window.axios({
-                method: 'post',
-                cache: false,
-                contentType: 'multipart/form-data',
-                url   : '{{ route('widget.widget') }}',
-                data  : data
-            })
-                .then(function (response) {
-                   // console.log('server:', response);
-
-                    /*    // here we will handle errors and validation messages
-                     if ( ! data.success) {
-
-                     // handle errors for name ---------------
-                     if (data.errors.name) {
-                     $('#name-group').addClass('has-error'); // add the error class to show red input
-                     $('#name-group').append('<div class="help-block">' + data.errors.name + '</div>'); // add the actual error message under our input
-                     }
-
-                     // handle errors for email ---------------
-                     if (data.errors.email) {
-                     $('#email-group').addClass('has-error'); // add the error class to show red input
-                     $('#email-group').append('<div class="help-block">' + data.errors.email + '</div>'); // add the actual error message under our input
-                     }
-
-                     // handle errors for superhero alias ---------------
-                     if (data.errors.superheroAlias) {
-                     $('#superhero-group').addClass('has-error'); // add the error class to show red input
-                     $('#superhero-group').append('<div class="help-block">' + data.errors.superheroAlias + '</div>'); // add the actual error message under our input
-                     }
-                     }
-                     */
-                    $this.closest('#widget').removeClass("open");
-                    toastr.success('Saved');
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    toastr.error('Error', 'Inconceivable!');
-                });
-        });
+        // Send Widget Form
+        widget.sendWidgetForm('.widgetForm', route.widget_delete);
+        /// END Widget
     </script>
 @stop
