@@ -1,5 +1,5 @@
 {
-    "name": "widgets-group",
+    "name": "Akopean/widgets-group",
     "description": "Package for using widgets group in Laravel-5",
      "type": "library",
      "keywords": [
