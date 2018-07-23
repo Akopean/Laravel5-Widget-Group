@@ -1,6 +1,6 @@
 <?php
 
-namespace Akopean\laravel5WidgetsGroup\Repository;
+namespace Akopean\laravel5WidgetsGroup;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -11,7 +11,7 @@ use Intervention\Image\ImageManager;
 use Akopean\laravel5WidgetsGroup\Models\Widget;
 
 
-class FileRepository
+class FineUploaderServer
 {
     private $field_options;
     private $widget;
@@ -104,16 +104,25 @@ class FileRepository
         $uuid = $this->form_data['qquuid'];
         $file_size = $this->form_data['qqtotalfilesize'];
 
-        $file_name = Storage::disk($this->filesystem)->put($this->slug, $file);
-        $value = json_decode($this->widget->value);
+        $originalName = $this->sanitize(explode('.', $file->getClientOriginalName())[0]);
+        $extension = $file->getClientOriginalExtension();
+        $unique_name = $this->createUniqueFilename($originalName, $extension);
+        $path = $this->generatePath().$unique_name;
 
-        $value->$name[] = [
-            'qqfilename' => $file_name,
+        Storage::disk($this->filesystem)->move(
+            Storage::disk($this->filesystem)->put($this->slug, $file),
+            $path);
+
+        $value = $this->widget->value;
+
+        $value[$name][] = [
+            'qqfilename' => $unique_name,
             'qquuid' => $uuid,
             'qqtotalfilessize' => $file_size,
+            'url' => Storage::disk($this->filesystem)->url($path),
         ];
 
-        $this->widget->value = json_encode($value);
+        $this->widget->value = $value;
 
         $this->widget->update();
 
@@ -173,14 +182,13 @@ class FileRepository
 
     public function createUniqueFilename($filename, $extension)
     {
-        $full_path_dir = \config('widgets.image.path.full_path');
-        $full_image_path = $full_path_dir . $filename . '.' . $extension;
+        $full_path = $this->generatePath() . $filename . '.' . $extension;
 
-        if (File::exists($full_image_path)) {
+        if (Storage::disk($this->filesystem)->exists($full_path)) {
             // Generate token for image
-            $imageToken = substr(sha1(mt_rand()), 0, 5);
+            $token = substr(sha1(mt_rand()), 0, 5);
 
-            return $filename . '-' . $imageToken . '.' . $extension;
+            return $filename . '-' . $token . '.' . $extension;
         }
 
         return $filename . '.' . $extension;

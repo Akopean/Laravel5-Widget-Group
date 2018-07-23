@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 class UpdateWidgetEvent
 {
     use SerializesModels;
-
+    /** @var Widget $widget */
     public $widget;
 
     public $request;

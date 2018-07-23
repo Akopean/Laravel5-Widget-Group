@@ -4,7 +4,7 @@
         <textarea
                 class="form-control"
                 name="{{ $key }}"
-                @if(isset($val['placeholder'])) placeholder="{{ _t('widgets.' . $val['placeholder'], 'text area') }} @endif"
-        >@if(!is_null($widget) && isset($widget->$key)){{ $widget->$key }}@elseif(isset($val['default'])){{$val['default']}}@endif</textarea>
+                @if(isset($options['placeholder'])) placeholder="{{ _t('widgets.' . $options['placeholder'], 'text area') }} @endif"
+        >@if(!is_null($widget) && isset($widget->$key)){{ $widget->$key }}@elseif(isset($options['default'])){{$options['default']}}@endif</textarea>
     </div>
 </div>

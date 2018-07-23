@@ -2,15 +2,13 @@
 
 namespace Akopean\laravel5WidgetsGroup\Http\Controllers;
 
-
 use Akopean\laravel5WidgetsGroup\Events\UpdateWidgetEvent;
-use Akopean\laravel5WidgetsGroup\Repository\FileRepository;
+use Akopean\laravel5WidgetsGroup\FineUploaderServer;
 use App\Http\Controllers\Controller;
 use Akopean\laravel5WidgetsGroup\Models\Widget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
-
 
 class WidgetController extends Controller
 {
@@ -20,11 +18,10 @@ class WidgetController extends Controller
 
     /**
      * WidgetController constructor.
-     * @param FileRepository $fileRepository
      */
-    public function __construct(FileRepository $fileRepository)
+    public function __construct()
     {
-        $this->file = $fileRepository;
+
     }
 
     /**
@@ -37,6 +34,7 @@ class WidgetController extends Controller
     }
 
     /**
+     * Update Widget Data
      * @param Request $request
      * @return mixed
      */
@@ -47,47 +45,9 @@ class WidgetController extends Controller
         return event(new UpdateWidgetEvent($widget, $request));
     }
 
-    /**
-     * @param Request $request
-     * @return mixed
-     */
-    public function fileUpload(Request $request)
-    {
-        return '{"success":true}';
-
-
-        $validatedData = $request->validate([
-            'id' => 'required|integer',
-        ]);
-
-        $widget = Widget::findOrFail($validatedData['id']);
-
-        $file = Input::all();
-        unset($file['id']);
-
-        if (!count($file)) {
-            return Response::json([
-                'error' => true,
-                'message' => 'Server error while uploading',
-                'code' => 500,
-            ], 500);
-        }
-
-        $response = $this->file->upload($file, $widget);
-
-        return $response;
-    }
 
     /**
-     * @param Request $request
-     * @return mixed
-     */
-    public function fileDelete(Request $request, $uuid)
-    {
-        return response()->json(['success' => 'success'], 200);
-    }
-
-    /**
+     * Delete Widget
      * @param Request $request
      * @return mixed
      */
@@ -102,23 +62,74 @@ class WidgetController extends Controller
     }
 
     /**
+     * Upload File for Widget
      * @param Request $request
      * @return mixed
      */
-    /*   public function store(Request $request)
-       {
-           $id = $request->all()['id'];
+    public function fileUpload(Request $request)
+    {
+        $validatedData = $request->validate([
+            'id' => 'required|integer',
+        ]);
 
-           $widget =  Widget::findOrFail($id);
-           $widget->name  = 'Text';
-           $widget->group = 'leftSidebar';
-           $widget->value =  json_encode($request->all());
+        $widget = Widget::findOrFail($validatedData['id']);
+        $file = Input::all();
+        $this->file = new FineUploaderServer($widget);
 
-           $widget->update();
+        $this->file->upload($file);
 
-           return $widget->toJson();
-       }
-   */
+        return Response::json([
+            'error' => false,
+            'code' => 200,
+            'success' => 'success',
+        ], 200);
+    }
+
+    /**
+     * Get Last Widget File Session
+     * @param Request $request
+     * @return mixed
+     */
+    public function fileSession(Request $request)
+    {
+        $validatedData = $request->validate([
+            'id' => 'required|integer',
+            'name' => 'required|string',
+        ]);
+
+        $response = [];
+        $name = $validatedData['name'];
+        $widget = Widget::findOrFail($validatedData['id']);
+        $value = $widget['value'];
+
+        //if no has data or no  has images
+        if (!$value || !array_key_exists($name, $value)) {
+            return $response;
+        }
+
+        foreach ($value[$name] as $key => $value) {
+            $response[] = [
+              //  'id' =>  $this->widget->id,
+                'name' => $value['qqfilename'],
+                'size' => $value['qqtotalfilessize'],
+                'url' => $value['url'],
+                //'thumbnailUrl'
+                'uuid' => $value['qquuid'],
+            ];
+        }
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function fileDelete(Request $request, $uuid)
+    {
+        return response()->json(['success' => 'success'], 200);
+    }
+
     /**
      * @param Request $request
      * @return string
@@ -158,6 +169,7 @@ class WidgetController extends Controller
             'oldGroup' => 'required|string',
             'name' => 'required|string',
         ]);
+
         $widget = Widget::where('group', 'like', $validatedData['oldGroup'])->where('index', '=',
             $validatedData['oldIndex'])->firstOrFail();
 
@@ -173,7 +185,7 @@ class WidgetController extends Controller
         }
 
         return $widget->toJson();
-        //return Response::json($$validatedData->errors(), 500);
+        //return Response::json($validatedData->errors(), 500);
     }
 
     /**
@@ -188,6 +200,7 @@ class WidgetController extends Controller
             'name' => 'required',
             'oldIndex' => 'required',
         ]);
+
         $widget = Widget::where('group', 'like', $validatedData['group'])->where('index', '=',
             $validatedData['oldIndex'])->firstOrFail();
 
@@ -198,7 +211,7 @@ class WidgetController extends Controller
         $widget->save();
 
         return $widget->toJson();
-        //return Response::json($$validatedData->errors(), 500);
+        //return Response::json($validatedData->errors(), 500);
     }
 
     /**

@@ -1,6 +1,7 @@
-@import "node_modules/toastr/build/toastr";
-@import "node_modules/bootstrap/dist/css/bootstrap.min";
-@import "node_modules/fine-uploader/jquery.fine-uploader/fine-uploader-gallery";
+@import "~toastr/build/toastr";
+@import "~bootstrap/dist/css/bootstrap.min";
+@import "~fine-uploader/jquery.fine-uploader/fine-uploader-gallery";
+@import "~bootstrap-toggle/css/bootstrap-toggle";
 
 body {
 	font-family: 'Open Sans', sans-serif;
@@ -34,7 +35,16 @@ body {
 		border-top-right-radius: 0;
 		border-bottom-right-radius: 0;
 	}
+	.btn-default {
+		color: #333;
+		background-color: #fff;
+		border-color: #ccc;
+	}
 }
+.radio_label{
+	font-size: 0.95rem;
+}
+
 .voyager.widgets {
 	display: block;
 }
@@ -145,4 +155,39 @@ ul.radio {
 
 .qq-gallery .qq-upload-button {
 	width: 100%;
+}
+
+.qq-gallery .qq-edit-filename-icon {
+	background: url("fine_uploader_gif/edit.gif");
+}
+
+.qq-gallery .qq-delete-icon {
+	background: url("fine_uploader_gif/trash.gif");
+}
+
+.qq-gallery .qq-retry-icon {
+	background: url("fine_uploader_gif/retry.gif");
+}
+
+.qq-gallery .qq-continue-icon {
+	background: url("fine_uploader_gif/continue.gif");
+}
+
+.qq-gallery .qq-pause-icon {
+	background: url("fine_uploader_gif/pause.gif");
+}
+
+.qq-gallery .qq-drop-processing-spinner {
+	background: url("fine_uploader_gif/processing.gif");
+}
+.qq-gallery .qq-upload-spinner {
+	background: url("fine_uploader_gif/loading.gif");
+}
+
+.qq-gallery.qq-uploader {
+	min-height: 100px;
+}
+
+.qq-gallery .qq-upload-file {
+	height: 40px;
 }

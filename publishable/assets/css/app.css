@@ -9125,6 +9125,132 @@ a.text-dark:focus, a.text-dark:hover {
   background-color: rgba(0, 0, 0, 0.7);
 }
 
+/*! ========================================================================
+ * Bootstrap Toggle: bootstrap-toggle.css v2.2.0
+ * http://www.bootstraptoggle.com
+ * ========================================================================
+ * Copyright 2014 Min Hur, The New York Times Company
+ * Licensed under MIT
+ * ======================================================================== */
+.checkbox label .toggle,
+.checkbox-inline .toggle {
+  margin-left: -20px;
+  margin-right: 5px;
+}
+
+.toggle {
+  position: relative;
+  overflow: hidden;
+}
+
+.toggle input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-group {
+  position: absolute;
+  width: 200%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  transition: left 0.35s;
+  -webkit-transition: left 0.35s;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+.toggle.off .toggle-group {
+  left: -100%;
+}
+
+.toggle-on {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 50%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.toggle-off {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  right: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.toggle-handle {
+  position: relative;
+  margin: 0 auto;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  height: 100%;
+  width: 0px;
+  border-width: 0 1px;
+}
+
+.toggle.btn {
+  min-width: 59px;
+  min-height: 34px;
+}
+
+.toggle-on.btn {
+  padding-right: 24px;
+}
+
+.toggle-off.btn {
+  padding-left: 24px;
+}
+
+.toggle.btn-lg {
+  min-width: 79px;
+  min-height: 45px;
+}
+
+.toggle-on.btn-lg {
+  padding-right: 31px;
+}
+
+.toggle-off.btn-lg {
+  padding-left: 31px;
+}
+
+.toggle-handle.btn-lg {
+  width: 40px;
+}
+
+.toggle.btn-sm {
+  min-width: 50px;
+  min-height: 30px;
+}
+
+.toggle-on.btn-sm {
+  padding-right: 20px;
+}
+
+.toggle-off.btn-sm {
+  padding-left: 20px;
+}
+
+.toggle.btn-xs {
+  min-width: 35px;
+  min-height: 22px;
+}
+
+.toggle-on.btn-xs {
+  padding-right: 12px;
+}
+
+.toggle-off.btn-xs {
+  padding-left: 12px;
+}
+
 body {
   font-family: 'Open Sans', sans-serif;
 }
@@ -9160,6 +9286,16 @@ body {
 .form-group .input-group-append ~ .input-group-wrap .form-control {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
+}
+
+.form-group .btn-default {
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.radio_label {
+  font-size: 0.95rem;
 }
 
 .voyager.widgets {
@@ -9260,4 +9396,48 @@ ul.radio {
   margin-left: 0;
   padding-left: 0;
   list-style: none;
+}
+
+.qq-gallery.qq-uploader {
+  padding: 0;
+}
+
+.qq-gallery .qq-upload-button {
+  width: 100%;
+}
+
+.qq-gallery .qq-edit-filename-icon {
+  background: url("fine_uploader_gif/edit.gif");
+}
+
+.qq-gallery .qq-delete-icon {
+  background: url("fine_uploader_gif/trash.gif");
+}
+
+.qq-gallery .qq-retry-icon {
+  background: url("fine_uploader_gif/retry.gif");
+}
+
+.qq-gallery .qq-continue-icon {
+  background: url("fine_uploader_gif/continue.gif");
+}
+
+.qq-gallery .qq-pause-icon {
+  background: url("fine_uploader_gif/pause.gif");
+}
+
+.qq-gallery .qq-drop-processing-spinner {
+  background: url("fine_uploader_gif/processing.gif");
+}
+
+.qq-gallery .qq-upload-spinner {
+  background: url("fine_uploader_gif/loading.gif");
+}
+
+.qq-gallery.qq-uploader {
+  min-height: 100px;
+}
+
+.qq-gallery .qq-upload-file {
+  height: 40px;
 }

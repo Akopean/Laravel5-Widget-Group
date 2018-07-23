@@ -1,5 +1,5 @@
 {
-    "name": "Akopean/laravel5WidgetsGroup",
+    "name": "widgets-group",
     "description": "Package for using widgets group in Laravel-5",
      "type": "library",
      "keywords": [
@@ -11,7 +11,7 @@
         {
             "name": "Agassi",
             "email": "agasi_dark@ukr.net",
-            "homepage": "https://github.com/Akopean/Laravel5WidgetGroup",
+            "homepage": "https://github.com/Akopean/widget-group",
             "role": "Developer"
         }
     ],

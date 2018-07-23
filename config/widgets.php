@@ -52,24 +52,32 @@ return [
     */
     'file' => [
         // Valid file mimes and size for uploading
-        'rules' => 'required|mimes:jpeg,jpg,png,svg | max:8192',
+        //'rules' => 'required|mimes:jpeg,jpg,png,svg | max:8192',
+        'rules' => [
+            'mimes' => 'jpg,jpeg,svg',
+            'size' => [
+                'min' => 1,
+                'max' => 8192,
+            ],
+        ],
         'messages' => [
             'file.*.required' => 'Please upload an image',
-            'file.*.mimes' => 'Only jpeg,png and bmp images are allowed',
-            'file.*.max' => 'Sorry! Maximum allowed size for an image is 20MB',
+            'file.*.mimes' => 'Only jpeg,png and svg images are allowed',
+            'file.*.max' => 'Sorry! Maximum allowed size for an image is ...MB',
+        ],
+        'image' => [
+            'path' => [
+                'full_path' => 'widgets/',
+                'icon_path' => 'widgets/icon/',
+            ],
+            'size' => [
+                'full_size' => 2048,
+                'icon_size' => 200,
+            ],
         ],
     ],
 
-    'image' => [
-        'path' => [
-            'full_path' => 'widgets/',
-            'icon_path' => 'widgets/icon/',
-        ],
-        'size' => [
-            'full_size' => 2048,
-            'icon_size' => 200
-        ]
-    ],
+
     /*
     |--------------------------------------------------------------------------
     | Path to the Widgets Assets
@@ -94,7 +102,7 @@ return [
         'rightSidebar' => 'Right Sidebar',
         'footer' => 'Footer',
         'after_header' => 'After Header',
-        'inactive' => 'asdad'
+        'inactive' => 'Inactive',
     ],
 
     /*
@@ -111,55 +119,85 @@ return [
             'placeholder' => 'Text Widget',
             'fields' => [
                 'title' => [
-                    'type' => 'text',
+                    'type' => 'text',//*
                     'placeholder' => 'text field',
                     'default' => 'Default text',
                     'prepend' => '$',
                     'append' => '.kg',
                 ],
-                /*    'body' => [
-                       'type' => 'text_area',
-                       'default' => 'text area',
-                       'placeholder' => 'text area',
-                   ],
-                   'bodys1' => [
-                       'type' => 'rich_text_box',
-                       'default' => 'Default rich text box',
-                   ],
-                   'number' => [
-                       'type' => 'number',
-                       'default' => '5',
-                       'placeholder' => 'text field',
-                       'prepend' => '$',
-                       'append' => '.kg'
-                   ],*/
+                'body' => [
+                    'type' => 'text_area',//*
+                    'default' => 'text area',
+                    'placeholder' => 'text area',
+                ],
+                'bodys1' => [
+                    'type' => 'rich_text_box',//*
+                    'default' => 'Default rich text box',
+                ],
+                'number' => [
+                    'type' => 'number',//*
+                    'default' => '5',
+                    'placeholder' => 'text field',//*
+                    'prepend' => '$',
+                    'append' => '.kg',
+                ],
+                'checkbox' => [
+                    'type' => 'checkbox',//*
+                    "checked" => true, //*
+                    'on' => "Activated",//* checked value
+                    'off' => "Disabled",//* not checked value
+                    'size' => 'normal', //large, normal, small, mini
+                    'onstyle' => 'success', //default, primary, success, info, warning, danger
+                    'offstyle' => 'warning', //default, primary, success, info, warning, danger
+                    'width'=> 200,
+
+                ],
+                'radio1' => [
+                    'type' => 'radio',//*
+                    "default" => "radio1",//*
+                    "options" => [
+                        "radio1" => "Radio Button 1 Text",
+                        "radio2" => "Radio Button 2 Text",
+                    ],
+                ],
                 'f' => [
                     'type' => 'file',
                     'min' => '1',//MB
                     'max' => '200',//MB
                     'multiple' => true, // default: false
-                    'rules' => 'mimes:txt | max:2048',
+                    'rules' => [
+                        'mimes' => 'mp3,txt',
+                        'size' => [
+                            'min' => 1,
+                            'max' => 2048,
+                        ],
+                    ],
                 ],
-              /*  'i' => [
-                    'type' => 'image',
-                    'min' => '1',//MB
-                    'max' => '200',//MB
-                    'multiple' => true, // default: false
-                    'rules' => 'mimes:jpeg,jpg | max:2048',
-                    'size' => [
-                        'full_size' => 1024
-                    ]
-                ],*/
+                /* 'f21' => [
+                     'type' => 'file',
+                     'min' => '1',//MB
+                     'max' => '200',//MB
+                     'multiple' => true, // default: false
+                     'rules' => [
+                         'mimes' => 'jpg,jpeg,png,svg',
+                         'size' => [
+                             'min' => 1,
+                             'max' => 2048,
+                         ],
+                     ],
+
+                 ],
+                 /*  'i' => [
+                       'type' => 'image',
+                       'min' => '1',//MB
+                       'max' => '200',//MB
+                       'multiple' => true, // default: false
+                       'rules' => 'mimes:jpeg,jpg | max:2048',
+                       'size' => [
+                           'full_size' => 1024
+                       ]
+                   ],*/
             ],
         ],
     ],
 ];
-
-/*            $allowedImageMimeTypes = [
-                'image/jpeg',
-                'image/png',
-                'image/gif',
-                'image/bmp',
-                'image/svg+xml',
-            ];
-*/

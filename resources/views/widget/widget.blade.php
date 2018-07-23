@@ -15,27 +15,29 @@
         <div class="col-md-12">
             <form method="post" class="widgetForm" enctype="multipart/form-data">
                 <input type="hidden" @if(!empty($id)) value="{{ $id }}" @endif name="id">
-                @foreach($value['fields'] as $key => $val)
-                    @if ($val['type'] == "text")
+                @foreach($value['fields'] as $key => $options)
+                    @if ($options['type'] == "text")
                         @include('widgets::particles.text')
-                    @elseif ($val['type'] == "number")
+                    @elseif ($options['type'] == "number")
                         @include('widgets::particles.number')
-                    @elseif($val['type'] == "text_area")
+                    @elseif($options['type'] == "text_area")
                         @include('widgets::particles.text_area')
-                    @elseif($val['type'] == "rich_text_box")
+                    @elseif($options['type'] == "rich_text_box")
                         @include('widgets::particles.rich_text_box')
-                    @elseif($val['type'] == "checkbox")
+                    @elseif($options['type'] == "checkbox")
                         @include('widgets::particles.checkbox')
-                    @elseif($val['type'] == "radio")
+                    @elseif($options['type'] == "radio")
                         @include('widgets::particles.radio')
-                    @elseif($val['type'] == "image")
+                    @elseif($options['type'] == "image")
                         @include('widgets::particles.image')
-                    @elseif($val['type'] == "file")
+                    @elseif($options['type'] == "file")
                         @include('widgets::particles.file')
                     @endif
                 @endforeach
-                <button type="button" id="widgetDelete" data-widgetId="@if(!empty($id)){{ $id }}@endif" class="btn btn-danger pull-right">{{ _t('widget.delete', 'Delete') }}</button>
-                <button type="submit" id="widgetSubmit" class="btn btn-primary float-right">{{ _t('widget.save', 'Save') }}</button>
+                <button type="button" id="widgetDelete" data-widgetId="@if(!empty($id)){{ $id }}@endif"
+                        class="btn btn-danger pull-right">{{ _t('widget.delete', 'Delete') }}</button>
+                <button type="submit" id="widgetSubmit"
+                        class="btn btn-primary float-right">{{ _t('widget.save', 'Save') }}</button>
             </form>
         </div>
     </div>

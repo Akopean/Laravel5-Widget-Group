@@ -83,8 +83,9 @@ export default class Widget {
             e.preventDefault();
             e.stopPropagation();
             const $this = $(this);
+            const data = new FormData($this[0]);
 
-            data = new FormData($this[0]);
+            data.has('qqfile') && data.delete('qqfile');//remove file-input if exist
 
             window.axios({
                 method: 'post',

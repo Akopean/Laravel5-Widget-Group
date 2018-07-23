@@ -30,7 +30,7 @@ class WidgetGroup
         $widgets = Widgets::where(['group' => $widget_zone])->get();
 
         foreach ($widgets as $widget){
-            $value = json_decode($widget['value']);
+            $value = $widget['value'];
             if (!empty($value) && !is_null($value)){
                 Widget::group($widget_zone)->addWidget($this->config['widgets'][$widget->name]['namespace'], $value);
             }

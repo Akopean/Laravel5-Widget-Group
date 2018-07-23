@@ -10,14 +10,14 @@ After creating your new Laravel application you can include package with the fol
 composer require *****
 ```
 
-###config/app.php
+#### config/app.php
 
 ```
 // ... other service providers
 Akopean\laravel5WidgetsGroup\WidgetServiceProvider::class,
 ```
 
-Then publish the configuration
+#### Then publish the configuration
 
 ```
 php artisan vendor:publish
@@ -34,7 +34,8 @@ DB_USERNAME=homestead
 DB_PASSWORD=secret
 ```
 
-Create table Widget
+#### Create table Widget
+
 ```
 php artisan migrate
 ```
@@ -56,14 +57,14 @@ Route::group(['prefix' => 'widget'], function () {
 ## Configuration
 
 
-
+....
 
 
 
 
 ## Additional Field Options
 
-### Find out how to use these additional details below:
+#### Find out how to use these additional details below:
 
 
 ##### Text and Number
@@ -101,9 +102,7 @@ Route::group(['prefix' => 'widget'], function () {
 ],
 ```
 
-  Akopean\laravel5WidgetsGroup\WidgetServiceProvider
   
-  composer require Akopean/laravel5-widgets-group:dev-master --prefer-source
   
   php artisan vendor:publish --provider="Akopean\laravel5WidgetsGroup\WidgetServiceProvider"
   

@@ -26,6 +26,7 @@
   "dependencies": {
     "axios": "^0.15.3",
     "bootstrap": "^4.1.1",
+    "bootstrap-toggle": "^2.2.2",
     "cross-env": "^3.2.3",
     "fine-uploader": "^5.16.2",
     "jquery": "^3.1.1",

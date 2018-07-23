@@ -8,31 +8,25 @@ use Akopean\laravel5WidgetsGroup\File;
 
 class UpdateWidget
 {
-    protected $file;
     /**
      * Create the event listener.
      *
      */
-    public function __construct(File $file)
+    public function __construct()
     {
-        $this->file = $file;
+
     }
 
     /**
      * Update Widget
-     *
      * @param UpdateWidgetEvent $widget
      * @return string
      */
     public function handle(UpdateWidgetEvent $widget)
     {
-        $file = [];
-        $files = $widget->request->file();
-        if($files) {
-            $file = $this->file->upload($widget->request);
-        }
+       // dd(json_encode(array_merge((array)json_decode($widget->w->value),$widget->r->post())));
 
-        $widget->widget->value = json_encode(array_merge($widget->request->post(), $file));
+        $widget->widget->value = array_merge((array)$widget->widget->value,$widget->request->post());
 
         $widget->widget->save();
 
