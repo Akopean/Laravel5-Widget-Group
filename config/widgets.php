@@ -14,7 +14,7 @@ return [
     */
 
     'controllers' => [
-        'namespace' => 'Akopean\\laravel5WidgetsGroup\\Http\\Controllers',
+        'namespace' => 'Akopean\\widgets\\Http\\Controllers',
     ],
 
     /*
@@ -27,7 +27,7 @@ return [
     */
 
     /* 'models' => [
-         'namespace' => 'Akopean\laravel5WidgetsGroup\Widgets',
+         'namespace' => 'Akopean\widgets\Widgets',
      ],
  */
     /*
@@ -67,12 +67,18 @@ return [
         ],
         'image' => [
             'path' => [
-                'full_path' => 'widgets/',
-                'icon_path' => 'widgets/icon/',
+                'full_path' => 'widgets',
+                'crop' => 'crop',
             ],
             'size' => [
-                'full_size' => 2048,
-                'icon_size' => 200,
+             /*   'full_size' => [
+                    'width' => 2048,
+                    'height' => 1024,
+                ],*/
+                'icon_size' => [
+                    'width' => 200,
+                    'height' => 200,
+                ],
             ],
         ],
     ],
@@ -87,7 +93,7 @@ return [
     |
     */
 
-    'assets_path' => '/vendor/Akopean/laravel5WidgetsGroup/assets',
+    'assets_path' => '/vendor/Akopean/widgets/assets',
 
     /*
     |--------------------------------------------------------------------------
@@ -115,33 +121,33 @@ return [
     */
     'widgets' => [
         'TextWidget' => [
-            'namespace' => 'Akopean\laravel5WidgetsGroup\widgets\TextWidget',
+            'namespace' => 'Akopean\widgets\widgets\TextWidget',
             'placeholder' => 'Text Widget',
             'fields' => [
-                'title' => [
+                'Text Field' => [
                     'type' => 'text',//*
                     'placeholder' => 'text field',
                     'default' => 'Default text',
                     'prepend' => '$',
                     'append' => '.kg',
                 ],
-                'body' => [
+                'Text Area Field' => [
                     'type' => 'text_area',//*
                     'default' => 'text area',
                     'placeholder' => 'text area',
                 ],
-                'bodys1' => [
+                'Rich Area Field' => [
                     'type' => 'rich_text_box',//*
                     'default' => 'Default rich text box',
                 ],
-                'number' => [
+                'Number Field' => [
                     'type' => 'number',//*
                     'default' => '5',
                     'placeholder' => 'text field',//*
                     'prepend' => '$',
                     'append' => '.kg',
                 ],
-                'checkbox' => [
+                'Checkbox' => [
                     'type' => 'checkbox',//*
                     "checked" => true, //*
                     'on' => "Activated",//* checked value
@@ -149,10 +155,10 @@ return [
                     'size' => 'normal', //large, normal, small, mini
                     'onstyle' => 'success', //default, primary, success, info, warning, danger
                     'offstyle' => 'warning', //default, primary, success, info, warning, danger
-                    'width'=> 200,
+                    'width' => 200,
 
                 ],
-                'radio1' => [
+                'Radio' => [
                     'type' => 'radio',//*
                     "default" => "radio1",//*
                     "options" => [
@@ -160,7 +166,7 @@ return [
                         "radio2" => "Radio Button 2 Text",
                     ],
                 ],
-                'f' => [
+                'File' => [
                     'type' => 'file',
                     'min' => '1',//MB
                     'max' => '200',//MB
@@ -173,8 +179,8 @@ return [
                         ],
                     ],
                 ],
-                /* 'f21' => [
-                     'type' => 'file',
+                 'Image' => [
+                     'type' => 'image',
                      'min' => '1',//MB
                      'max' => '200',//MB
                      'multiple' => true, // default: false
@@ -185,18 +191,12 @@ return [
                              'max' => 2048,
                          ],
                      ],
-
+                 /*    'crop' => [ ...
+                         // original and icon don`t use for key
+                         'middle' => [1024, 700], // [width, height]
+                         'small' => [300, 300]
+                     ]*/
                  ],
-                 /*  'i' => [
-                       'type' => 'image',
-                       'min' => '1',//MB
-                       'max' => '200',//MB
-                       'multiple' => true, // default: false
-                       'rules' => 'mimes:jpeg,jpg | max:2048',
-                       'size' => [
-                           'full_size' => 1024
-                       ]
-                   ],*/
             ],
         ],
     ],

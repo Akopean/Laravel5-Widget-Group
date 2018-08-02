@@ -1,6 +1,6 @@
 <div class="panel">
     <div class="form-group">
-        <h5>{{ _t('widgets.' . $name . '.' . $key, $key) }}</h5>
+        <h5>{{ _t('widgets::widgets.' . $name . '.' . $key, $key) }}</h5>
         @if(isset($options['prepend'])) <span class="input-group-prepend">{{ $options['prepend'] }}</span> @endif
         @if(isset($options['append'])) <span class="input-group-append">{{ $options['append'] }}</span> @endif
         <div class="input-group-wrap">

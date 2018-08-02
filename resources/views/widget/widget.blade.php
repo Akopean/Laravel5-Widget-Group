@@ -8,7 +8,7 @@
             </button>
         </div>
         <div class="widget-title ui-draggable-handle">
-            <h3>{{ _t($value['placeholder'], $value['placeholder']) }}</h3>
+            <h3>{{ _t('widgets::widgets.'.$value['placeholder'], $value['placeholder']) }}</h3>
         </div>
     </div>
     <div class="widget-inside row dropdown-menu">
@@ -28,9 +28,7 @@
                         @include('widgets::particles.checkbox')
                     @elseif($options['type'] == "radio")
                         @include('widgets::particles.radio')
-                    @elseif($options['type'] == "image")
-                        @include('widgets::particles.image')
-                    @elseif($options['type'] == "file")
+                    @elseif($options['type'] == "image" || $options['type'] == "file")
                         @include('widgets::particles.file')
                     @endif
                 @endforeach

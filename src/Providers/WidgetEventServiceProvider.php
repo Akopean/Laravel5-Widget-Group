@@ -1,6 +1,6 @@
 <?php
 
-namespace Akopean\laravel5WidgetsGroup\Providers;
+namespace Akopean\widgets\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -13,8 +13,8 @@ class WidgetEventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'Akopean\laravel5WidgetsGroup\Events\UpdateWidgetEvent' => [
-            'Akopean\laravel5WidgetsGroup\Listeners\UpdateWidget'
+        'Akopean\widgets\Events\UpdateWidgetEvent' => [
+            'Akopean\widgets\Listeners\UpdateWidget'
         ],
     ];
 

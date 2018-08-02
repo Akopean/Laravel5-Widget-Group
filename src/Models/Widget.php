@@ -1,6 +1,6 @@
 <?php
 
-namespace Akopean\laravel5WidgetsGroup\Models;
+namespace Akopean\widgets\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

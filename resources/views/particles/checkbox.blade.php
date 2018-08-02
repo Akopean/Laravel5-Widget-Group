@@ -1,5 +1,6 @@
 <div class="panel">
     <div class="form-group">
+        <h5>{{ _t('widgets::widgets.' . $name . '.' . $key, $key) }}</h5>
         <label class="form-check-label">
             <input type="hidden" name="{{ $key }}" value="{{ $options['off'] }}">
             <input data-toggle="toggle"

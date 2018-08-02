@@ -27,6 +27,7 @@ window.$(document).ready(function () {
     });
 });
 
+
 // add dropdown
 window.$(document).on('click', '[data-toggle="widget-dropdown"]', function (e) {
     jQuery(this).parent().toggleClass('open');

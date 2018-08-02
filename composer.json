@@ -1,6 +1,6 @@
 {
     "name": "akopean/widgets-group",
-    "description": "Package for using widgets group in Laravel-5",
+    "description": "Package for using widgets in Laravel-5",
      "type": "library",
      "keywords": [
         "laravel",
@@ -11,7 +11,6 @@
         {
             "name": "Agassi",
             "email": "agasi_dark@ukr.net",
-            "homepage": "https://github.com/Akopean/laravel5WidgetsGroup",
             "role": "Developer"
         }
     ],
@@ -24,7 +23,19 @@
     },
     "autoload": {
         "psr-4": {
-            "Akopean\\laravel5WidgetsGroup\\": "src/"
+            "Akopean\\widgets\\": "src/"
         }
+    },
+  "autoload-dev": {
+    "psr-4": {
+      "Akopean\\widgets\\Tests\\": "tests/"
     }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Akopean\\widgets\\WidgetServiceProvider"
+      ]
+    }
+  }
 }

@@ -51,9 +51,7 @@ export default class Widget {
         return new Promise((resolve, reject) => {
             let settings = [];
             let editorIds = [];
-            /* for (let id in window.tinyMCE.editors) {
-             editorIds.push(id);
-             }*/
+
             $this.find('[data-rich="richTextBox"]').each(function () {
                 editorIds.push(this.id);
             });

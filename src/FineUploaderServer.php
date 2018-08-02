@@ -1,14 +1,15 @@
 <?php
 
-namespace Akopean\laravel5WidgetsGroup;
+namespace Akopean\widgets;
+
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
-use Akopean\laravel5WidgetsGroup\Models\Widget;
+use Akopean\widgets\Models\Widget;
+use \Illuminate\Http\File;
 
 
 class FineUploaderServer
@@ -35,61 +36,13 @@ class FineUploaderServer
 
     /**
      * @param array $form_data
-     * @return \Illuminate\Http\JsonResponse
      */
     public function upload($form_data)
     {
         $this->field_options = $this->widget->getFieldOptions($form_data['name']);
         $this->form_data = $form_data;
 
-        switch ($this->field_options['type']) {
-            case 'image':
-                $this->uploadImage();
-                break;
-            default:
-                $this->uploadFile();
-                break;
-        }
-        /*
-     $value = [];
-     $file_count = count($form_data['file']);
-     for ($i = 0; $i < $file_count; $i++) {
-         $file = $form_data['file'][$i];
-         $originalName = $file->getClientOriginalName();
-         $extension = $file->getClientOriginalExtension();
-         $originalNameWithoutExt = substr($originalName, 0, strlen($originalName) - strlen($extension) - 1);
-
-         $filename = $this->sanitize($originalNameWithoutExt);
-         $allowed_filename = $this->createUniqueFilename($filename, $extension);
-
-         $uploadSuccess1 = $this->original($file, $allowed_filename);
-
-         $uploadSuccess2 = $this->icon($file, $allowed_filename);
-         $value[$i] = ['original' => $uploadSuccess1, 'icon' => $uploadSuccess2];
-
-         if (!$uploadSuccess1 || !$uploadSuccess2) {
-
-             return Response::json([
-                 'error' => true,
-                 'message' => 'Server error while uploading',
-                 'code' => 500,
-             ], 500);
-
-         }
-     }
-     dd($value);
-     $sessionImage = new Widget;
-     $sessionImage->filename = $allowed_filename;
-     $sessionImage->original_name = $originalName;
-     $sessionImage->save();
-
-     return Response::json([
-         'error' => false,
-         'code' => 200,
-     ], 200);
-
- }
-*/
+        $this->uploadFile();
     }
 
     /**
@@ -97,40 +50,51 @@ class FineUploaderServer
      */
     private function uploadFile()
     {
+       $files = null;
+        $qqfile = $this->form_data['qqfile'];
+
         $this->validateFileType();
 
-        $file = $this->form_data['qqfile'];
-        $name = $this->form_data['name'];
-        $uuid = $this->form_data['qquuid'];
         $file_size = $this->form_data['qqtotalfilesize'];
 
-        $originalName = $this->sanitize(explode('.', $file->getClientOriginalName())[0]);
-        $extension = $file->getClientOriginalExtension();
-        $unique_name = $this->createUniqueFilename($originalName, $extension);
-        $path = $this->generatePath().$unique_name;
+        $original_name = $this->sanitize(explode('.', $qqfile->getClientOriginalName())[0]);
+        $extension = $qqfile->getClientOriginalExtension();
+        $full_name = $this->createUniqueFilename($original_name, $extension);
+        $file_path = $this->generatePath() . $full_name;
 
-        Storage::disk($this->filesystem)->move(
-            Storage::disk($this->filesystem)->put($this->slug, $file),
-            $path);
+        $file = Storage::disk($this->filesystem)->put($this->slug, $qqfile);
+        //original file path
+        $original_path = Storage::disk($this->filesystem)->move($file, $file_path) ? $file_path : $file;
+        $files['original'] = [
+            'path' => $original_path,
+            'url' => Storage::disk($this->filesystem)->url($original_path),
+            ];
+
+        if ($this->field_options['type'] === 'image') {
+            $icon = null;
+            //start cropping
+            if ($qqfile->getClientOriginalExtension() !== 'gif' || $qqfile->getClientOriginalExtension() !== 'svg') {
+
+                $icon = $this->createIcon($qqfile,$original_name . '_icon.' . $extension);
+                $files['icon'] = [
+                    'path' => $icon,
+                    'url' => Storage::disk($this->filesystem)->url($icon),
+                ];
+            }
+        }
 
         $value = $this->widget->value;
 
-        $value[$name][] = [
-            'qqfilename' => $unique_name,
-            'qquuid' => $uuid,
+        $value[$this->form_data['name']][] = [
+            'qqfilename' => $full_name,
+            'qquuid' => $this->form_data['qquuid'],
             'qqtotalfilessize' => $file_size,
-            'url' => Storage::disk($this->filesystem)->url($path),
+            'paths' => $files,
         ];
 
         $this->widget->value = $value;
 
         $this->widget->update();
-
-    }
-
-    private function uploadImage()
-    {
-        $this->validateFileType();
     }
 
     /**
@@ -179,7 +143,11 @@ class FineUploaderServer
         return true;
     }
 
-
+    /**
+     * @param $filename
+     * @param $extension
+     * @return string
+     */
     public function createUniqueFilename($filename, $extension)
     {
         $full_path = $this->generatePath() . $filename . '.' . $extension;
@@ -195,16 +163,21 @@ class FineUploaderServer
     }
 
     /**
-     * Optimize Original Image
+     * Cropping image
+     * @param $photo
+     * @param string $filename
+     * @param array $size = ['width', 'height']
+     * @return \Intervention\Image\Image
      */
-    public function original($photo, $filename)
+    public function crop($photo, $filename, $size)
     {
         $manager = new ImageManager();
 
-        $image = $manager->make($photo)->resize(\config('widgets.image.size.full_size'), null,
+
+        $image = $manager->make($photo)->resize($size['width'], $size['height'],
             function ($constraint) {
                 $constraint->aspectRatio();
-            })->save('widgets' . DIRECTORY_SEPARATOR . $filename);
+            })->save(public_path('images' . DIRECTORY_SEPARATOR . $filename));
 
         return $image;
     }
@@ -212,20 +185,24 @@ class FineUploaderServer
     /**
      * Create Icon From Original
      * @param $photo
-     * @param $filename
-     * @return \Intervention\Image\Image
+     * @param path
+     * @return string
      */
-    public function icon($photo, $filename)
+    public function createIcon($photo, $path)
     {
-        $manager = new ImageManager();
+        $image = $this->crop($photo, $path, \config('widgets.file.image.size.icon_size'));
 
-        $image = $manager->make($photo)->resize(\config('widgets.image.size.icon_size'), null,
-            function ($constraint) {
-                $constraint->aspectRatio();
-            })
-            ->save(Config::get('widgets.image.path.icon_path') . $filename);
+        $saved_image_uri = $image->dirname . DIRECTORY_SEPARATOR . $image->basename;
 
-        return $image;
+        $uploaded_icon_image = Storage::disk($this->filesystem)->putFileAs(
+            $this->generatePath() . Config::get('widgets.file.image.path.crop'),
+            new File($saved_image_uri),
+            $path);
+
+        $image->destroy();
+        unlink($saved_image_uri);
+
+        return $uploaded_icon_image;
     }
 
     /**

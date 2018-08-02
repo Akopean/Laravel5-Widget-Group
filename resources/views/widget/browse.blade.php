@@ -29,8 +29,8 @@
                     <div class="col-md-12">
                         <div class="widget-holder">
                             <div class="sidebar-description">
-                                <h3>{{ _t('widget.available', 'Available Widgets') }}</h3>
-                                <p class="description">{{ _t('widget.available-desc', 'To activate a widget drag it to a sidebar or click on it. To deactivate a widget and delete its settings, drag it back.') }}
+                                <h3>{{ __('widgets::widgets.available') }}</h3>
+                                <p class="description">{{ __('widgets::widgets.available-desc') }}
                                 </p>
                             </div>
                             <div class="widget-list">
@@ -44,8 +44,8 @@
                     </div>
                     <div class="col-md-12">
                         <div class="sidebar-description">
-                            <h3>{{ _t('widget.inactive', 'Inactive Widgets') }}</h3>
-                            <p class="description">{{ _t('widget.inactive-desc', 'Drag widgets here to remove them from the sidebar but keep their settings.') }}</p>
+                            <h3>{{ __('widgets::widgets.inactive') }}</h3>
+                            <p class="description">{{ __('widgets::widgets.inactive-desc') }}</p>
                         </div>
                         <div class="widget-list">
                             <div class="widget-inactive">
@@ -62,9 +62,9 @@
                             @continue
                         @endif
                         <div class="col-md-6">
-                            <h3> {{ $value }} </h3>
+                            <h3> {{ _t('widgets::widgets.'.$value, $value) }} </h3>
                             <div class="widget-inner" data-group="{{ $group }}" id="{{ $group }}">
-                                @foreach(\Akopean\laravel5WidgetsGroup\Models\Widget::where('group', '=', $group)->orderBy('index', 'ASC')->get() as $widget)
+                                @foreach(\Akopean\widgets\Models\Widget::where('group', '=', $group)->orderBy('index', 'ASC')->get() as $widget)
                                     @include('widgets::widget.widget', [
                                         'id' => $widget['id'],
                                         'widget' => $widget['value'],
@@ -82,15 +82,15 @@
     <!-- Fine Uploader Gallery template
   ====================================================================== -->
     <script type="text/template" id="qq-template-gallery">
-        <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
+        <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="{{ __('widgets::widgets.DropFilesHere') }}">
             <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
                 <span class="qq-upload-drop-area-text-selector"></span>
             </div>
             <div class="qq-upload-button-selector qq-upload-button">
-                <div>Upload a file</div>
+                <div>{{ __('widgets::widgets.UploadFile') }}</div>
             </div>
             <span class="qq-drop-processing-selector qq-drop-processing">
-                <span>Processing dropped files...</span>
+                <span>{{ __('widgets::widgets.ProcessingDroppedFiles') }}</span>
                 <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
             </span>
             <ul class="qq-upload-list-selector qq-upload-list" role="region" aria-live="polite"
@@ -108,7 +108,7 @@
                     <button type="button" class="qq-upload-cancel-selector qq-upload-cancel">X</button>
                     <button type="button" class="qq-upload-retry-selector qq-upload-retry">
                         <span class="qq-btn qq-retry-icon" aria-label="Retry"></span>
-                        Retry
+                        {{ __('widgets::widgets.Retry') }}
                     </button>
 
                     <div class="qq-file-info">
@@ -135,15 +135,15 @@
             <dialog class="qq-alert-dialog-selector">
                 <div class="qq-dialog-message-selector"></div>
                 <div class="qq-dialog-buttons">
-                    <button type="button" class="qq-cancel-button-selector">Close</button>
+                    <button type="button" class="qq-cancel-button-selector">{{ __('widgets::widgets.Close') }}</button>
                 </div>
             </dialog>
 
             <dialog class="qq-confirm-dialog-selector">
                 <div class="qq-dialog-message-selector"></div>
                 <div class="qq-dialog-buttons">
-                    <button type="button" class="qq-cancel-button-selector">No</button>
-                    <button type="button" class="qq-ok-button-selector">Yes</button>
+                    <button type="button" class="qq-cancel-button-selector">{{ __('widgets::widgets.No') }}</button>
+                    <button type="button" class="qq-ok-button-selector">{{ __('widgets::widgets.Yes') }}</button>
                 </div>
             </dialog>
 
@@ -151,8 +151,8 @@
                 <div class="qq-dialog-message-selector"></div>
                 <input type="text">
                 <div class="qq-dialog-buttons">
-                    <button type="button" class="qq-cancel-button-selector">Cancel</button>
-                    <button type="button" class="qq-ok-button-selector">Ok</button>
+                    <button type="button" class="qq-cancel-button-selector"></button>
+                    <button type="button" class="qq-ok-button-selector">{{ __('widgets::widgets.Ok') }}</button>
                 </div>
             </dialog>
         </div>
@@ -163,13 +163,13 @@
 @section('javascript')
     <script>
         window.route = {
-            'file_upload': '{{ route('widget.widget.fileUpload') }}',
-            'file_session': '{{ route('widget.widget.fileSession') }}',
-            'file_delete': '{{ route('widget.widget.fileDelete', '') }}',
+              'file_upload': '{{ route('widget.widget.fileUpload') }}',
+             'file_session': '{{ route('widget.widget.fileSession') }}',
+              'file_delete': '{{ route('widget.widget.fileDelete', '') }}',
             'widget_create': '{{ route('widget.widget.create') }}',
             'widget_update': '{{ route('widget.widget') }}',
-            'widget_drag': '{{ route("widget.widget.drag") }}',
-            'widget_sort': '{{ route("widget.widget.sort") }}',
+              'widget_drag': '{{ route("widget.widget.drag") }}',
+              'widget_sort': '{{ route("widget.widget.sort") }}',
             'widget_delete': '{{ route('widget.widget.delete') }}',
 
         };
@@ -186,7 +186,7 @@
                 'route': {
                     'upload': route['file_upload'],
                     'delete': route['file_delete'],
-                    'session': route['file_session'],
+                   'session': route['file_session'],
                 },
                 'token': '{{ csrf_token() }}'
             });

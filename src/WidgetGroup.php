@@ -1,8 +1,8 @@
 <?php
 
-namespace Akopean\laravel5WidgetsGroup;
+namespace Akopean\widgets;
 
-use Akopean\laravel5WidgetsGroup\Models\Widget as Widgets;
+use Akopean\widgets\Models\Widget as Widgets;
 use Widget;
 
 class WidgetGroup

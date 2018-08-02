@@ -1,14 +1,15 @@
 <?php
 
-namespace Akopean\laravel5WidgetsGroup\Http\Controllers;
+namespace Akopean\widgets\Http\Controllers;
 
-use Akopean\laravel5WidgetsGroup\Events\UpdateWidgetEvent;
-use Akopean\laravel5WidgetsGroup\FineUploaderServer;
+use Akopean\widgets\Events\UpdateWidgetEvent;
+use Akopean\widgets\FineUploaderServer;
 use App\Http\Controllers\Controller;
-use Akopean\laravel5WidgetsGroup\Models\Widget;
+use Akopean\widgets\Models\Widget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 
 class WidgetController extends Controller
 {
@@ -112,8 +113,8 @@ class WidgetController extends Controller
               //  'id' =>  $this->widget->id,
                 'name' => $value['qqfilename'],
                 'size' => $value['qqtotalfilessize'],
-                'url' => $value['url'],
-                //'thumbnailUrl'
+                'url' => $value['paths']['original']['url'],
+                'thumbnailUrl' => $value['paths']['icon']['url'],
                 'uuid' => $value['qquuid'],
             ];
         }
@@ -127,7 +128,40 @@ class WidgetController extends Controller
      */
     public function fileDelete(Request $request, $uuid)
     {
-        return response()->json(['success' => 'success'], 200);
+        $validatedData = $request->validate([
+            'id' => 'required|integer',
+            'name' => 'required|string'
+        ]);
+
+        $widget = Widget::findOrFail($validatedData['id']);
+        $data = $widget->value;
+
+        $id = null;
+        $file_data = null;
+
+        if (isset($data[$validatedData['name']])) {
+            foreach ($data[$validatedData['name']] as $key => $value) {
+                if ($value['qquuid'] === $uuid) {
+                    $file_data = array_splice($data[$validatedData['name']], $key,1)[0];
+                    break;
+                }
+
+            }
+        }
+        $widget->value = $data;
+
+        if(Storage::disk(config('widgets.storage.disk', 'public'))->has(($file_data['paths']['original']['path'])))
+        {
+            Storage::disk(config('widgets.storage.disk', 'public'))->delete($file_data['paths']['original']['path']);
+        }
+
+        if(isset($file_data['paths']['icon']) && Storage::disk(config('widgets.storage.disk', 'public'))->has(($file_data['paths']['icon']['path'])))
+        {
+            Storage::disk(config('widgets.storage.disk', 'public'))->delete($file_data['paths']['icon']['path']);
+        }
+
+        $widget->update();
+      //  return response()->json(['success' => 'success'], 200);
     }
 
     /**
@@ -136,7 +170,6 @@ class WidgetController extends Controller
      */
     public function create(Request $request)
     {
-        // return abort(500, 'Unauthorized action.');
         $validatedData = $request->validate([
             'index' => 'required|integer',
             'group' => 'required',
@@ -153,7 +186,6 @@ class WidgetController extends Controller
         $widget->save();
 
         return $widget->toJson();
-        //return Response::json($$validatedData->errors(), 500);
     }
 
     /**
@@ -185,7 +217,6 @@ class WidgetController extends Controller
         }
 
         return $widget->toJson();
-        //return Response::json($validatedData->errors(), 500);
     }
 
     /**
@@ -211,7 +242,6 @@ class WidgetController extends Controller
         $widget->save();
 
         return $widget->toJson();
-        //return Response::json($validatedData->errors(), 500);
     }
 
     /**

@@ -1,22 +1,13 @@
 <?php
 
-namespace Akopean\laravel5WidgetsGroup\Listeners;
+namespace Akopean\widgets\Listeners;
 
-use Akopean\laravel5WidgetsGroup\Events\UpdateWidgetEvent;
-use Akopean\laravel5WidgetsGroup\File;
+use Akopean\widgets\Events\UpdateWidgetEvent;
+use Akopean\widgets\File;
 
 
 class UpdateWidget
 {
-    /**
-     * Create the event listener.
-     *
-     */
-    public function __construct()
-    {
-
-    }
-
     /**
      * Update Widget
      * @param UpdateWidgetEvent $widget

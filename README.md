@@ -7,14 +7,16 @@
 After creating your new Laravel application you can include package with the following command: 
 
 ```
-composer require *****
+composer require akopean/widgets-group
 ```
 
 #### config/app.php
 
+> Only if you are on Laravel 5.4 will you need to [Add the Service Provider.](https://laravel.com/docs/5.6/providers)
+
 ```
 // ... other service providers
-Akopean\laravel5WidgetsGroup\WidgetServiceProvider::class,
+Akopean\widgets\WidgetServiceProvider::class,
 ```
 
 #### Then publish the configuration
@@ -45,12 +47,12 @@ php artisan migrate
 Somewhere in your routes file(s)
 
 ```
- \Akopean\laravel5WidgetsGroup\Widget::routes();
+ \Akopean\widgets\Widget::routes();
 ```
 or
 ```
 Route::group(['prefix' => 'widget'], function () {
-    \Akopean\laravel5WidgetsGroup\Widget::routes();
+    \Akopean\widgets\Widget::routes();
 });
 ```
 
@@ -95,15 +97,26 @@ Route::group(['prefix' => 'widget'], function () {
 ```
 'placeholder' => [
     'type' => 'file' || 'image',
-    'placeholder' => ' ***** ',
-    'min' => '12',//MB?
-    'max' => '200',//MB?
-    'file_types' => '.txt .jpg .png'?
-],
+      'placeholder' => ' ***** ',
+      'min' => '12',//MB?
+      'max' => '200',//MB?
+      'file_types' => '.txt .jpg .png'?
+  ],
 ```
 
+  ## Other
+
+  `Laravel Widget Group` based on following plugins or services:
+```
+  + [Laravel](https://laravel.com/)
+  + [laravel-widgets](https://github.com/arrilot/laravel-widgets)
+  + [toastr](http://codeseven.github.io/toastr/)
+  + [sortable](https://github.com/RubaXa/Sortable)
+  + [tinymce](https://github.com/tinymce)
+  + [fine-uploader](https://github.com/FineUploader/fine-uploader)
+  + [material-design-icons](https://material.io/tools/icons/?style=baseline)
+  ```
+
+  php artisan vendor:publish --provider="Akopean\widgets\WidgetServiceProvider"
   
-  
-  php artisan vendor:publish --provider="Akopean\laravel5WidgetsGroup\WidgetServiceProvider"
-  
-  php artisan vendor:publish --force --provider="Akopean\laravel5WidgetsGroup\WidgetServiceProvider" --tag="config"
+  php artisan vendor:publish --force --provider="Akopean\widgets\WidgetServiceProvider" --tag="config"

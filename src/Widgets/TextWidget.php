@@ -1,8 +1,8 @@
 <?php
 
-namespace Akopean\laravel5WidgetsGroup\Widgets;
+namespace Akopean\widgets\Widgets;
 
-use Akopean\laravel5WidgetsGroup\AbstractWidget;
+use Akopean\widgets\AbstractWidget;
 
 class TextWidget extends AbstractWidget
 {

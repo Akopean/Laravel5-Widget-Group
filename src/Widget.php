@@ -1,6 +1,6 @@
 <?php
 
-namespace Akopean\widgetsGroup;
+namespace Akopean\widgets;
 
 class Widget{
  

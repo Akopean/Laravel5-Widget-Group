@@ -1,5 +1,5 @@
 <div class="panel">
-    <h5>{{ _t('widgets.' . $name . '.' . $key, $key) }}</h5>
+    <h5>{{ _t('widgets::widgets.' . $name . '.' . $key, $key) }}</h5>
     <ul class="radio">
         @if(isset($options['options']) && isset($options['default']))
             @foreach($options['options'] as $index => $option)

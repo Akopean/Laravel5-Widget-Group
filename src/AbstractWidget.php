@@ -1,12 +1,12 @@
 <?php
 
-namespace Akopean\laravel5WidgetsGroup;
+namespace Akopean\widgets;
 
 
 abstract class AbstractWidget extends \Arrilot\Widgets\AbstractWidget {
 
     //default namespace
-    public $namespace = 'Akopean\laravel5WidgetsGroup\Widgets';
+    public $namespace = 'Akopean\widgets\Widgets';
 
     /**
      *  Возвращаем  массив полей   ['title' => 'textinput', '...' => 'checkbox']

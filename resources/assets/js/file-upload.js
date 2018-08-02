@@ -50,6 +50,7 @@ export default class FileUploader {
                 customHeaders: {
                     'X-CSRF-TOKEN': options.token,
                 },
+                //forceConfirm: true,
             },
             thumbnails: {
                 placeholders: {
@@ -59,35 +60,13 @@ export default class FileUploader {
             },
             validation: {
                 // allowedExtensions: ['jpeg', 'jpg', 'gif', 'png', 'txt'],
-                itemLimit: 5,
+                //itemLimit: 5,
             },
             callbacks: {
-
                 onUpload: function () {
                     let fieldName = jQuery(el).data('fieldName');
                     let fieldId = jQuery(el).parent('.widgetForm').children('input[name="id"]').val();
-
-
                     this.setParams({name: fieldName, id: fieldId});
-                },
-                onSessionRequestComplete: function (response, success, xhrOrXdr) {
-                    //console.log('sessionRequestComplete');
-                   //  console.log(response, success, xhrOrXdr);
-                },
-                onAllComplete: function (event, id, name, response) {
-                    // console.log('allcomplete');
-                    //console.log(event, id, name, response);
-                    //uploader.drawThumbnail(fileId, document.getElementById('picture'), 200, true);
-                },
-                onComplete: function (event, id, name, response) {
-                    //console.log('complete');
-                    // console.log(event, id, name, response);
-                    //uploader.drawThumbnail(fileId, document.getElementById('picture'), 200, true);
-                },
-                onSubmitted: function (event, id, name) {
-                    //console.log('submitted');
-                    toastr.success('Saved', `${name} has been uploaded`);
-
                 },
                 onValidate: function (fileData) {
                     //console.log('validate');
@@ -101,13 +80,39 @@ export default class FileUploader {
                     }
                     return true;
                 },
-                onDelete: function (event, id, name) {
+                onSubmitDelete: function(id){
+                    let fieldName = jQuery(el).data('fieldName');
+                    let fieldId = jQuery(el).parent('.widgetForm').children('input[name="id"]').val();
+                    this.setDeleteFileParams({name: fieldName, id: fieldId}, id);
+                },
+                onDeleteComplete: function (e, xhr, isError) {
                     toastr.success('Deleted', `${name} Deleted`);
+                  console.log(e, xhr, isError);
+                },
+                onSubmitted: function (event, id, name) {
+                    //console.log('submitted');
+                    toastr.success('Saved', `${name} has been uploaded`);
+
                 },
             },
         }, session));
     }
 };
 
+/*
 
-
+onSessionRequestComplete: function (response, success, xhrOrXdr) {
+    //console.log('sessionRequestComplete');
+    //  console.log(response, success, xhrOrXdr);
+},
+onAllComplete: function (event, id, name, response) {
+    // console.log('allcomplete');
+    //console.log(event, id, name, response);
+    //uploader.drawThumbnail(fileId, document.getElementById('picture'), 200, true);
+},
+onComplete: function (event, id, name, response) {
+    //console.log('complete');
+    // console.log(event, id, name, response);
+    //uploader.drawThumbnail(fileId, document.getElementById('picture'), 200, true);
+},
+*/

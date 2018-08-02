@@ -1,8 +1,8 @@
 <?php
 
-namespace Akopean\laravel5WidgetsGroup\Events;
+namespace Akopean\widgets\Events;
 
-use Akopean\laravel5WidgetsGroup\Models\Widget;
+use Akopean\widgets\Models\Widget;
 use Illuminate\Http\Request;
 use Illuminate\Queue\SerializesModels;
 
@@ -24,6 +24,5 @@ class UpdateWidgetEvent
     {
         $this->widget = $widget;
         $this->request = $request;
-      //  event(new UpdateWidgetEvent($widget, $data, 'Added'));
     }
 }

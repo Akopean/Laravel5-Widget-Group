@@ -1,6 +1,6 @@
 <?php
 
-namespace Akopean\laravel5WidgetsGroup\Repository;
+namespace Akopean\widgets\Repository;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
-use Akopean\laravel5WidgetsGroup\Models\Widget;
+use Akopean\widgets\Models\Widget;
 
 
 class FileRepository
