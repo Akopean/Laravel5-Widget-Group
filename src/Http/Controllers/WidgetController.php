@@ -4,7 +4,6 @@ namespace Akopean\widgets\Http\Controllers;
 
 use Akopean\widgets\Events\UpdateWidgetEvent;
 use Akopean\widgets\FineUploaderServer;
-use App\Http\Controllers\Controller;
 use Akopean\widgets\Models\Widget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -18,11 +17,12 @@ class WidgetController extends Controller
     protected $file;
 
     /**
+     * @param Widget $widgets
      * WidgetController constructor.
      */
-    public function __construct()
+    public function __construct(Widget $widgets)
     {
-
+        $this->widgets = $widgets;
     }
 
     /**
@@ -41,7 +41,7 @@ class WidgetController extends Controller
      */
     public function update(Request $request)
     {
-        $widget = Widget::findOrFail($request->post()['id']);
+        $widget = $this->widgets->findOrFail($request->post()['id']);
 
         return event(new UpdateWidgetEvent($widget, $request));
     }
@@ -54,9 +54,7 @@ class WidgetController extends Controller
      */
     public function delete(Request $request)
     {
-        $id = $request->all()['id'];
-
-        $widget = Widget::findOrFail($id);
+        $widget = $this->widgets->findOrFail($request->all()['id']);
         $widget->delete();
 
         return $widget->toJson();
@@ -73,7 +71,7 @@ class WidgetController extends Controller
             'id' => 'required|integer',
         ]);
 
-        $widget = Widget::findOrFail($validatedData['id']);
+        $widget = $this->widgets->findOrFail($validatedData['id']);
         $file = Input::all();
         $this->file = new FineUploaderServer($widget);
 
@@ -100,7 +98,7 @@ class WidgetController extends Controller
 
         $response = [];
         $name = $validatedData['name'];
-        $widget = Widget::findOrFail($validatedData['id']);
+        $widget = $this->widgets->findOrFail($validatedData['id']);
         $value = $widget['value'];
 
         //if no has data or no  has images
@@ -133,7 +131,7 @@ class WidgetController extends Controller
             'name' => 'required|string'
         ]);
 
-        $widget = Widget::findOrFail($validatedData['id']);
+        $widget = $this->widgets->findOrFail($validatedData['id']);
         $data = $widget->value;
 
         $id = null;
@@ -178,7 +176,7 @@ class WidgetController extends Controller
 
         $this->sortable($validatedData['group'], $validatedData['index']);
 
-        $widget = new Widget();
+        $widget = $this->widgets;
         $widget->name = $validatedData['name'];
         $widget->group = $validatedData['group'];
         $widget->index = $validatedData['index'];
@@ -202,7 +200,7 @@ class WidgetController extends Controller
             'name' => 'required|string',
         ]);
 
-        $widget = Widget::where('group', 'like', $validatedData['oldGroup'])->where('index', '=',
+        $widget = $this->widgets->where('group', 'like', $validatedData['oldGroup'])->where('index', '=',
             $validatedData['oldIndex'])->firstOrFail();
 
         $widget->index = $validatedData['index'];
@@ -232,7 +230,7 @@ class WidgetController extends Controller
             'oldIndex' => 'required',
         ]);
 
-        $widget = Widget::where('group', 'like', $validatedData['group'])->where('index', '=',
+        $widget = $this->widgets->where('group', 'like', $validatedData['group'])->where('index', '=',
             $validatedData['oldIndex'])->firstOrFail();
 
         $widget->index = $validatedData['index'];
@@ -254,7 +252,7 @@ class WidgetController extends Controller
     protected function sortable($group, $index = -1, $oldIndex = null)
     {
         $sortIndex = 0;
-        $widgets = Widget::where('group', 'like', $group)->where('index', '!=', $oldIndex)->orderBy('index',
+        $widgets = $this->widgets->where('group', 'like', $group)->where('index', '!=', $oldIndex)->orderBy('index',
             'ASC')->get();
 
         foreach ($widgets as $widget) {

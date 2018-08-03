@@ -11,21 +11,24 @@
 */
 
 Route::group(['as' => 'widget.'], function () {
-	
-	  event('widget.routing', app('router'));
-	  
-	$namespacePrefix = '\\'.config('widgets.controllers.namespace').'\\';
-	
-	Route::get('widget',['uses'=> $namespacePrefix.'WidgetController@index'])->name('widget');
-    Route::post('widget',['uses'=> $namespacePrefix.'WidgetController@update'])->name('widget');
 
-    Route::post('widget/create',['uses'=> $namespacePrefix.'WidgetController@create'])->name('widget.create');
-    Route::post('widget/delete',['uses'=> $namespacePrefix.'WidgetController@delete'])->name('widget.delete');
+    event('widget.routing', app('router'));
 
-    Route::post('widget/sort',['uses'=> $namespacePrefix.'WidgetController@sort'])->name('widget.sort');
-    Route::post('widget/drag',['uses'=> $namespacePrefix.'WidgetController@drag'])->name('widget.drag');
+    $namespacePrefix = '\\' . config('widgets.controllers.namespace') . '\\';
 
-    Route::post('widget/fileUpload',['uses'=> $namespacePrefix.'WidgetController@fileUpload'])->name('widget.fileUpload');
-    Route::get('widget/fileSession',['uses'=> $namespacePrefix.'WidgetController@fileSession'])->name('widget.fileSession');
-    Route::delete('widget/fileDelete/{uuid}',['uses'=> $namespacePrefix.'WidgetController@fileDelete'])->name('widget.fileDelete');
+    Route::get('widget', ['uses' => $namespacePrefix . 'WidgetController@index'])->name('widget');
+    Route::post('widget', ['uses' => $namespacePrefix . 'WidgetController@update'])->name('widget');
+
+    Route::post('widget/create', ['uses' => $namespacePrefix . 'WidgetController@create'])->name('widget.create');
+    Route::post('widget/delete', ['uses' => $namespacePrefix . 'WidgetController@delete'])->name('widget.delete');
+
+    Route::post('widget/sort', ['uses' => $namespacePrefix . 'WidgetController@sort'])->name('widget.sort');
+    Route::post('widget/drag', ['uses' => $namespacePrefix . 'WidgetController@drag'])->name('widget.drag');
+
+    Route::post('widget/fileUpload',
+        ['uses' => $namespacePrefix . 'WidgetController@fileUpload'])->name('widget.fileUpload');
+    Route::get('widget/fileSession',
+        ['uses' => $namespacePrefix . 'WidgetController@fileSession'])->name('widget.fileSession');
+    Route::delete('widget/fileDelete/{uuid}',
+        ['uses' => $namespacePrefix . 'WidgetController@fileDelete'])->name('widget.fileDelete');
 });

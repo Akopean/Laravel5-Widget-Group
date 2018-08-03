@@ -2,6 +2,7 @@
 
 namespace Akopean\widgets;
 
+use Akopean\widgets\Http\Controllers\WidgetController;
 use Illuminate\Support\ServiceProvider;
 use Akopean\widgets\Providers\WidgetEventServiceProvider;
 use App;

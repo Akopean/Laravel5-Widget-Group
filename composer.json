@@ -1,31 +1,41 @@
 {
-    "name": "akopean/widgets-group",
-    "description": "Package for using widgets in Laravel-5",
-     "type": "library",
-     "keywords": [
-        "laravel",
-        "widgets"
-    ],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Agassi",
-            "email": "agasi_dark@ukr.net",
-            "role": "Developer"
-        }
-    ],
-     "minimum-stability": "stable",
-     "require": {
-        "php": ">=7.0.0",
-		"arrilot/laravel-widgets": "^3.7.0",
-		"laravel/framework": "~5.5",
-        "intervention/image": "^2.4"
-    },
-    "autoload": {
-        "psr-4": {
-            "Akopean\\widgets\\": "src/"
-        }
-    },
+  "name": "akopean/widgets",
+  "description": "Package for using widgets in Laravel-5",
+  "type": "library",
+  "keywords": [
+    "laravel",
+    "widgets"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Agassi",
+      "email": "agasi_dark@ukr.net",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.0.0",
+    "arrilot/laravel-widgets": "^3.7.0",
+    "intervention/image": "^2.4"
+  },
+  "require-dev": {
+    "phpunit/phpcov": "~3.0|~4.0",
+    "phpunit/phpunit": "~6.1|~7.0",
+    "laravel/framework": "~5.5.0|~5.6.0",
+    "orchestra/testbench": "~3.5.0|~3.6.0",
+    "orchestra/database": "~3.5.0|~3.6.0",
+    "orchestra/testbench-core": "~3.5.0|~3.6.0",
+    "laravel/browser-kit-testing": "~1.0.0|~2.0.0",
+    "orchestra/testbench-browser-kit": "~3.5.0|~3.6.0",
+    "codeclimate/php-test-reporter": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Akopean\\widgets\\": "src/"
+    }
+  },
   "autoload-dev": {
     "psr-4": {
       "Akopean\\widgets\\Tests\\": "tests/"
