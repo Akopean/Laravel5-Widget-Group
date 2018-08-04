@@ -1,6 +1,6 @@
 <?php
 
-namespace Akopean\widgets;
+namespace Akopean\widgets\Models;
 
 use Illuminate\Database\Eloquent\Model as eModel;
 

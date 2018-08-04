@@ -2,7 +2,7 @@
 
 namespace Akopean\widgets;
 
-class Widget{
+class Widgets{
  
 	protected $widgets;
  

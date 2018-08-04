@@ -23,6 +23,15 @@ class TestCase extends OrchestraTestCase
     {
         return [
             WidgetServiceProvider::class,
+            \Arrilot\Widgets\ServiceProvider::class,
+        ];
+    }
+
+    protected function getPackageAliases($app)
+    {
+        return [
+            'Widget'       => \Arrilot\Widgets\Facade::class,
+            'AsyncWidget'  => \Arrilot\Widgets\AsyncFacade::class,
         ];
     }
 

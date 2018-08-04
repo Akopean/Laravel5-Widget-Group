@@ -21,7 +21,7 @@ class WidgetTest extends TestCase
 
         $widget->name = 'Test Title';
         $widget->group = 'test-group';
-        $widget->value = json_encode(['id' => 2, 'Text' => 'text']);
+        $widget->value = ['id' => 2, 'Text' => 'text'];
         $widget->index = 2;
 
         // Act
@@ -31,7 +31,7 @@ class WidgetTest extends TestCase
         $this->assertEquals('test-group', $widget->group);
         $this->assertEquals('Test Title', $widget->name);
 
-        $this->assertEquals(json_encode(['id' => 2, 'Text' => 'text']), $widget->value);
+        $this->assertEquals(['id' => 2, 'Text' => 'text'], $widget->value);
         $this->assertEquals(2, $widget->index);
     }
 }

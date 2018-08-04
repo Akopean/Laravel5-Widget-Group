@@ -2,9 +2,9 @@
     @if(!empty($title))
         <h4 class="text-widget__title">{{ $title }}</h4>
     @endif
-     @if(!empty($body))
+     @if(!empty($Text_Field))
      <p class="text-widget__body">
-        {{ $body }}
+        {{ $Text_Field }}
      </p>
     @endif
 </div>

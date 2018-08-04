@@ -16,6 +16,11 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./app</directory>
+        </whitelist>
+    </filter>
     <logging>
         <log type="tap" target="build/report.tap"/>
         <log type="junit" target="build/report.junit.xml"/>
@@ -26,7 +31,6 @@
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_DEBUG" value="true"/>
-        <env name="APP_URL" value="http://localhost"/>
-        <env name="APP_KEY" value="base64:M1igrxNfAWlVGyxxDholHqvVqvtPjAzCoJ+2/ILAVPw="/>
+        <env name="APP_KEY" value="base64:1StiqpOTlDVJDlyuqyhkaJrF7ZJV5YfT0G7Y/z7it2c="/>
     </php>
 </phpunit>

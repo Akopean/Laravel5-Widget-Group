@@ -2,10 +2,13 @@
 
 namespace Akopean\widgets\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
- * @property mixed $value
+ * @property int $id
+ * @property json $value
+ * @property string $group
+ * @property int $index
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  */
 class Widget extends Model
 {

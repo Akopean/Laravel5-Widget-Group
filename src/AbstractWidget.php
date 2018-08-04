@@ -6,7 +6,7 @@ namespace Akopean\widgets;
 abstract class AbstractWidget extends \Arrilot\Widgets\AbstractWidget {
 
     //default namespace
-    public $namespace = 'Akopean\widgets\Widgets';
+    public $namespace = 'Akopean\widgets\Models\Widgets';
 
     /**
      *  Возвращаем  массив полей   ['title' => 'textinput', '...' => 'checkbox']

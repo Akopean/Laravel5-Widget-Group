@@ -20,8 +20,9 @@ class WidgetController extends Controller
      * @param Widget $widgets
      * WidgetController constructor.
      */
-    public function __construct(Widget $widgets)
+    public function __construct(Widget $widgets, $location = null)
     {
+
         $this->widgets = $widgets;
     }
 

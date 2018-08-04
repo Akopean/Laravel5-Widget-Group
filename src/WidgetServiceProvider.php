@@ -2,7 +2,6 @@
 
 namespace Akopean\widgets;
 
-use Akopean\widgets\Http\Controllers\WidgetController;
 use Illuminate\Support\ServiceProvider;
 use Akopean\widgets\Providers\WidgetEventServiceProvider;
 use App;
@@ -52,13 +51,17 @@ class WidgetServiceProvider extends ServiceProvider
 
         App::register(\Intervention\Image\ImageServiceProvider::class);
 
-        App::singleton('widget', function () {
-            return new \Akopean\widgets\Widget();
+        App::singleton('widgets', function () {
+            return new Widgets();
         });
 
         App::singleton('WidgetGroup', function () {
             return new WidgetGroup();
         });
+
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/widgets.php', 'widgets'
+        );
 
         $this->loadHelpers();
     }
