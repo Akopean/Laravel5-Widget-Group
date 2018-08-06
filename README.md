@@ -1,13 +1,12 @@
 # Laravel Widget Group
 
 <p align="center">
-<a href="https://travis-ci.org/Akopean/widgets-group">
-<img src="https://travis-ci.org/Akopean/widgets-group.svg?branch=master" alt="Build Status"></a>
+<a href="https://travis-ci.org/Akopean/widgetss">
+<img src="https://travis-ci.org/Akopean/widgets.svg?branch=master" alt="Build Status"></a>
 </p>
 
-<p align="center">
-<img width="400">
-</p>
+![Widgets Screenshot](https://s3.eu-central-1.amazonaws.com/widget-group/widgets.png)
+
 
 ## Installation Steps
 
