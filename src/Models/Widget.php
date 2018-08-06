@@ -24,11 +24,13 @@ class Widget extends Model
        // 'created_at' => 'datetime:Y-m-d',
     ];
 
+    protected $guarded = [];
     /**
      * Get Widget config options
      * @return \Illuminate\Config\Repository|mixed|null
      */
     public function getOptions() {
+
         if (config($this->configPath . $this->name)) {
             return config($this->configPath . $this->name);
         }

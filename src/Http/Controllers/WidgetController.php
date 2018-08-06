@@ -20,7 +20,7 @@ class WidgetController extends Controller
      * @param Widget $widgets
      * WidgetController constructor.
      */
-    public function __construct(Widget $widgets, $location = null)
+    public function __construct(Widget $widgets)
     {
 
         $this->widgets = $widgets;
@@ -30,9 +30,18 @@ class WidgetController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index(Request $request, $group = null)
     {
-        return view('widgets::widget.browse', ['widgets' => $this->widgets]);
+        $query = null;
+
+        if (!$group) {
+            $query = $this->widgets;
+        } else {
+            $query  = $this->widgets->where(['group' => $group])->where(['group' => 'inactive']);
+        }
+        $collection =  $query->get();
+
+        return view('widgets::widget.browse', ['collection' => $collection]);
     }
 
     /**
@@ -73,6 +82,7 @@ class WidgetController extends Controller
         ]);
 
         $widget = $this->widgets->findOrFail($validatedData['id']);
+
         $file = Input::all();
         $this->file = new FineUploaderServer($widget);
 
@@ -113,7 +123,7 @@ class WidgetController extends Controller
                 'name' => $value['qqfilename'],
                 'size' => $value['qqtotalfilessize'],
                 'url' => $value['paths']['original']['url'],
-                'thumbnailUrl' => $value['paths']['icon']['url'],
+                'thumbnailUrl' => isset($value['paths']['icon']['url']) ? $value['paths']['icon']['url'] : '',
                 'uuid' => $value['qquuid'],
             ];
         }
@@ -160,7 +170,7 @@ class WidgetController extends Controller
         }
 
         $widget->update();
-      //  return response()->json(['success' => 'success'], 200);
+        return response()->json(['success' => 'success'], 200);
     }
 
     /**

@@ -25,7 +25,7 @@ class FineUploaderServer
 
     /**
      * FileRepository constructor.
-     * @param Widgets $widget
+     * @param Widget $widget
      */
     public function __construct(Widget $widget)
     {

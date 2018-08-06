@@ -49,7 +49,22 @@
                         </div>
                         <div class="widget-list">
                             <div class="widget-inactive">
-                                <div class="widget-inner" data-group="inactive" id="inactive"></div>
+                                <div class="widget-inner" data-group="inactive" id="inactive">
+                                    @foreach(config('widgets')['group'] as $group => $value)
+                                        @if($group === 'inactive')
+                                            @foreach($collection->filter(function($item) use ($group) {
+                                                            return $item->group === $group;
+                                                         }) as $widget)
+                                                @include('widgets::widget.widget', [
+                                                    'id' => $widget['id'],
+                                                    'widget' => $widget['value'],
+                                                    'name' => $widget['name'],
+                                                    'value' => config('widgets')['widgets'][$widget['name']]
+                                                ])
+                                            @endforeach
+                                        @endif
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -64,7 +79,9 @@
                         <div class="col-md-6">
                             <h3> {{ _t('widgets::widgets.'.$value, $value) }} </h3>
                             <div class="widget-inner" data-group="{{ $group }}" id="{{ $group }}">
-                                @foreach(\Akopean\widgets\Models\Widget::where('group', '=', $group)->orderBy('index', 'ASC')->get() as $widget)
+                                @foreach($collection->filter(function($item) use ($group) {
+                                                return $item->group === $group;
+                                             }) as $widget)
                                     @include('widgets::widget.widget', [
                                         'id' => $widget['id'],
                                         'widget' => $widget['value'],
@@ -82,7 +99,8 @@
     <!-- Fine Uploader Gallery template
   ====================================================================== -->
     <script type="text/template" id="qq-template-gallery">
-        <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="{{ __('widgets::widgets.DropFilesHere') }}">
+        <div class="qq-uploader-selector qq-uploader qq-gallery"
+             qq-drop-area-text="{{ __('widgets::widgets.DropFilesHere') }}">
             <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
                 <span class="qq-upload-drop-area-text-selector"></span>
             </div>
@@ -163,13 +181,13 @@
 @section('javascript')
     <script>
         window.route = {
-              'file_upload': '{{ route('widget.widget.fileUpload') }}',
-             'file_session': '{{ route('widget.widget.fileSession') }}',
-              'file_delete': '{{ route('widget.widget.fileDelete', '') }}',
+            'file_upload': '{{ route('widget.widget.fileUpload') }}',
+            'file_session': '{{ route('widget.widget.fileSession') }}',
+            'file_delete': '{{ route('widget.widget.fileDelete', '') }}',
             'widget_create': '{{ route('widget.widget.create') }}',
             'widget_update': '{{ route('widget.widget') }}',
-              'widget_drag': '{{ route("widget.widget.drag") }}',
-              'widget_sort': '{{ route("widget.widget.sort") }}',
+            'widget_drag': '{{ route("widget.widget.drag") }}',
+            'widget_sort': '{{ route("widget.widget.sort") }}',
             'widget_delete': '{{ route('widget.widget.delete') }}',
 
         };
@@ -186,7 +204,7 @@
                 'route': {
                     'upload': route['file_upload'],
                     'delete': route['file_delete'],
-                   'session': route['file_session'],
+                    'session': route['file_session'],
                 },
                 'token': '{{ csrf_token() }}'
             });
