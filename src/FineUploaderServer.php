@@ -39,6 +39,7 @@ class FineUploaderServer
      */
     public function upload($form_data)
     {
+
         $this->field_options = $this->widget->getFieldOptions($form_data['name']);
         $this->form_data = $form_data;
 

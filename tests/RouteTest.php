@@ -15,107 +15,210 @@ class RouteTest extends TestCase
      * @var \Akopean\widgets\Models\Widget
      */
     protected $widget;
+    protected $group;
+    protected $config;
+
+    // Метод setUpBeforeClass() выполняется только раз перед созданием объекта тестирующего класса.
+    public static function setUpBeforeClass()
+    {
+
+    }
 
     public function setUp()
     {
         parent::setUp();
-        config(['widgets.storage.disk' => 'file']);
+
+        $this->config = config('widgets');
+
+        $this->group = key($this->config['group']);
+
+        //config(['widgets.storage.disk' => 'file']);
+
+        $this->withFactories(__DIR__ . '/database/factories');
+
+        $this->widget = factory(Widget::class)->create();
     }
 
     /**
-     * A basic functional test example.
-     *
+     * @test
      * @return void
      */
-    public function testGetRoutes()
+    public function can_route_index()
     {
-        $urls = [
-            ['url' => route('widget.widget'), 'method' => 'GET'],
-            [
-                'url' => route('widget.widget.create',
-                    [
-                        'group' => "leftSidebar",
-                        'index' => 0,
-                        'name' => "TextWidget",
-                    ]),
-                'method' => 'POST',
-            ],
-            [
-                'url' => route('widget.widget.sort',
-                    [
-                        'group' => "leftSidebar",
-                        'index' => 1,
-                        'name' => "TextWidget",
-                        'oldIndex' => 0,
-                    ]),
-                'method' => 'POST',
-            ],
-            [
-                'url' => route('widget.widget.drag', [
-                    'group' => 'footer',
-                    'index' => 0,
-                    'name' => 'TextWidget',
-                    'oldGroup' => 'leftSidebar',
-                    'oldIndex' => 1,
-                ]),
-                'method' => 'POST',
-            ],
-            ['url' => route('widget.widget.delete', ['id' => 1]), 'method' => 'POST'],
-        ];
+        $http_widget = $this->call('GET', route('widget.widget'));
 
-        foreach ($urls as $url) {
-            $response = $this->call($url['method'], $url['url']);
+        $this->assertEquals(200, $http_widget->status(), route('widget.widget') . ' did not return a 200');
 
-            $this->assertEquals(200, $response->status(), $url['url'] . ' did not return a 200');
-        }
+        $http_widget_group = $this->call('GET', route('widget.widget'), ['group' => $this->group]);
+
+        $this->assertEquals(200, $http_widget_group->status(),
+            route('widget.widget') . '/' . $this->group . ' did not return a 200');
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function can_route_create()
+    {
+        $http_widget_create = $this->call('POST', route('widget.widget.create'), [
+            'group' => $this->group,
+            'index' => 1,
+            'name' => key($this->config['widgets']),
+        ]);
+
+        $this->assertEquals(201, $http_widget_create->status(),
+            route('widget.widget.create') . ' did not return a 201');
+
+        // missing call params   index, name, group
+        $this->call('POST', route('widget.widget.create'));
+
+        $this->assertSessionHasErrors(['group', 'name', 'index']);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function can_route_update()
+    {
+        $http_widget_update = $this->call('POST', route('widget.widget.update'), ['id' => 1]);
+
+        $this->assertEquals(200, $http_widget_update->status(),
+            route('widget.widget.update') . ' did not return a 200');
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function can_route_delete()
+    {
+        $http_widget_delete = $this->call('POST', route('widget.widget.delete'), ['id' => 1]);
+
+        $this->assertEquals(202, $http_widget_delete->status(),
+            route('widget.widget.delete') . ' did not return a 202');
+
+        // missing call params   index, name, group
+        $this->call('POST', route('widget.widget.delete'));
+
+        $this->assertSessionHasErrors(['id']);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function can_route_sort()
+    {
+        $widget = factory(Widget::class)->create([
+            'index' => 1,
+        ]);
+
+        $oldIndex = $widget->index;
+        $newIndex = 0;
+        $http_widget_sort = $this->call('POST', route('widget.widget.sort'),
+            [
+                'name' => key($this->config['widgets']),
+                'group' => $this->group,
+                'index' => $newIndex,
+                'oldIndex' => $oldIndex,
+            ]);
+
+
+        $this->assertEquals(202, $http_widget_sort->status(),
+            route('widget.widget.sort') . ' did not return a 202');
+
+        $sortWidget = Widget::find($widget->id);
+
+        $this->assertEquals($newIndex, $sortWidget->index, 'did not sorting');
+
+
+        // missing call params   index, name, group
+        $this->call('POST', route('widget.widget.sort'));
+
+        $this->assertSessionHasErrors(['group', 'name', 'oldIndex', 'index']);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function can_route_drag()
+    {
+        $widget = factory(Widget::class)->create([
+            'index' => 1,
+        ]);
+
+        $newGroup = key($this->config['inactive_group']);
+
+        $http_widget_drag = $this->call('POST', route('widget.widget.drag'),
+            [
+                'name' => key($this->config['widgets']),
+                'group' => $newGroup,
+                'oldGroup' => $this->group,
+                'index' => 0,
+                'oldIndex' => 1,
+            ]);
+
+
+        $this->assertEquals(202, $http_widget_drag->status(),
+            route('widget.widget.drag') . ' did not return a 202');
+
+
+        $dragWidget = Widget::find($widget->id);
+
+        $this->assertEquals($newGroup, $dragWidget->group, 'did not dragging');
+
+
+        // missing call params   index, name, group
+        $this->call('POST', route('widget.widget.drag'));
+
+        $this->assertSessionHasErrors(['group', 'name', 'index', 'oldGroup', 'oldIndex']);
     }
 
     /** test */
-    public function testManipulateFileRoutes()
-    {
-        Storage::fake('file');
+      public function testManipulateFileRoutes()
+      {
+          Storage::fake('file');
 
-        $widget = new Widget([
-            'name' => 'TextWidget',
-            'group' => 'test-group',
-            'value' => ['id' => 2, 'Text' => 'text'],
-            'index' => 2,
-        ]);
-        $widget->save();
+          $widget = $this->widget;
 
-        $fileUpload = $this->call('POST', route('widget.widget.fileUpload'), [
-            'name' => 'File',
-            'id' => $widget->id,
-            'qquuid' => 'aa96222b-311e-4ed0-94f0-9487125392c5',
-            'qqfilename' => 'file.png',
-            'qqtotalfilesize' => 30856,
-            'qqfile' => UploadedFile::fake()->image(realpath(__DIR__ . '/temp/file.png')),
-        ]);
+          $fileUpload = $this->call('POST', route('widget.widget.fileUpload'), [
+              'name' => 'File',
+              'id' => $widget->id,
+              'qquuid' => 'aa96222b-311e-4ed0-94f0-9487125392c5',
+              'qqfilename' => 'file.png',
+              'qqtotalfilesize' => 30856,
+              'qqfile' => UploadedFile::fake()->image(realpath(__DIR__ . '/temp/file.png')),
+          ]);
 
-        $this->assertResponseStatus($fileUpload->status());
+          $this->assertResponseStatus($fileUpload->status());
 
-        Storage::disk('file')->assertExists(config('widgets.storage.slug') . DIRECTORY_SEPARATOR . date('FY') . DIRECTORY_SEPARATOR . 'file.png');
+          // Assert a file exist
+          Storage::disk('file')->assertExists(config('widgets.storage.slug') . DIRECTORY_SEPARATOR . date('FY') . DIRECTORY_SEPARATOR . 'file.png');
 
-        // Assert a file does not exist...
-        Storage::disk('file')->assertMissing('missing.jpg');
+          // Assert a file does not exist
+          Storage::disk('file')->assertMissing('missing.jpg');
 
 
-        $fileSession = $this->call('GET', route('widget.widget.fileSession'), [
-            'id' => $widget->id,
-            'name' => 'File',
-        ]);
+          $fileSession = $this->call('GET', route('widget.widget.fileSession'), [
+              'id' => $widget->id,
+              'name' => 'File',
+          ]);
+          // Assert response status
+          $this->assertResponseStatus($fileSession->status());
 
-        $this->assertResponseStatus($fileSession->status());
+          $widget_delete = Widget::find($widget->id);
 
-        $widget_delete = Widget::find($widget->id);
+          $fileSession = $this->call('delete',
+              route('widget.widget.fileDelete', ['uuid' => $widget_delete->value['File'][0]['qquuid']]), [
+                  'id' => $widget->id,
+                  'name' => 'File',
+              ]);
 
-        $fileSession = $this->call('delete', route('widget.widget.fileDelete',  ['uuid' => $widget_delete->value['File'][0]['qquuid']]), [
-            'id' => $widget->id,
-            'name' => 'File',
-        ]);
+          $this->assertResponseStatus($fileSession->status());
 
-        $this->assertResponseStatus($fileSession->status());
-
-        Storage::disk('file')->assertMissing(config('widgets.storage.slug') . DIRECTORY_SEPARATOR . date('FY') . DIRECTORY_SEPARATOR . 'file.png');
-    }
+          Storage::disk('file')->assertMissing(config('widgets.storage.slug') . DIRECTORY_SEPARATOR . date('FY') . DIRECTORY_SEPARATOR . 'file.png');
+      }
 }

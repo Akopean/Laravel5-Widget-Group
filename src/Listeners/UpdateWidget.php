@@ -4,6 +4,7 @@ namespace Akopean\widgets\Listeners;
 
 use Akopean\widgets\Events\UpdateWidgetEvent;
 use Akopean\widgets\File;
+use Illuminate\Http\Response;
 
 
 class UpdateWidget
@@ -21,6 +22,6 @@ class UpdateWidget
 
         $widget->widget->save();
 
-        return  $widget->widget->toJson();
+        return response()->json($widget->widget->toJson(), 200);
     }
 }

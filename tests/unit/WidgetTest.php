@@ -13,10 +13,16 @@ class WidgetTest extends TestCase
      * @var \Akopean\widgets\Models\Widget
      */
     protected $widget;
+    protected $group;
+    protected $config;
 
     public function setUp()
     {
         parent::setUp();
+
+        $this->config = config('widgets');
+
+        $this->group = key($this->config['group']);
 
         $this->withFactories(__DIR__.'/../database/factories');
 
@@ -24,18 +30,26 @@ class WidgetTest extends TestCase
     }
 
     /** @test */
-    public function can_get_value_to_array()
+    public function can_create_widget_model()
     {
         //Create
-        $this->widget->value = ['id' => 2, 'Text' => 'text'];
+        $widget = new Widget();
 
+        $widget->fill([
+            'name'  => key(config('widgets.widgets')),
+            'group' => 'test',
+            'value' => ['id' => 1, 'test' => 'test'],
+            'index' => 0,
+        ]);
 
         // Act
-        $value = $this->widget->value;
+        $widget->save();
 
         // Assert
-        $this->assertEquals(['id' => 2, 'Text' => 'text'], $value);
-
+        $this->assertEquals(0, $widget->index);
+        $this->assertEquals('test', $widget->group);
+        $this->assertEquals(key(config('widgets.widgets')), $widget->name);
+        $this->assertEquals(['id' => 1, 'test' => 'test'], $widget->value);
     }
 
     /** test */
@@ -45,8 +59,8 @@ class WidgetTest extends TestCase
         $options = $this->widget->getOptions();
 
         //Assert
-        $this->assertEquals("Akopean\widgets\widgets\TextWidget", $options['namespace']);
-        $this->assertEquals("Text Widget", $options['placeholder']);
+        $this->assertEquals("Akopean\widgets\Tests\stubs\TestWidget", $options['namespace']);
+        $this->assertEquals("Test Widget", $options['placeholder']);
         $this->assertEquals(true, is_array($options['fields']));
     }
 
@@ -66,7 +80,7 @@ class WidgetTest extends TestCase
     public function testCanGetFieldOptions()
     {
         //Create
-        $options = $this->widget->getFieldOptions('Text Field');
+        $options = $this->widget->getFieldOptions('Test Field');
 
         //Assert
         $this->assertNotNull($options);

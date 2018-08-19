@@ -1,13 +1,13 @@
 <div class="panel">
     <div class="form-group">
-        <h5>{{ _t('widgets::widgets.' . $name . '.' . $key, $key) }}</h5>
+        <h5>{{ _t('widgets::widgets.' . $name . '.' . $options['title'], $options['title']) }}</h5>
         <label class="form-check-label">
-            <input type="hidden" name="{{ $key }}" value="{{ $options['off'] }}">
+            <input type="hidden" name="{{ $id }}" value="{{ $options['off'] }}">
             <input data-toggle="toggle"
                    value="{{ $options['on'] }}"
                    class="form-check-input"
                    type="checkbox"
-                   name="{{$key }}"
+                   name="{{$id }}"
                    data-on="{{ $options['on'] }}"
                    data-off="{{ $options['off'] }}"
                    @if(isset($options['width']) && !empty($options['width']))
@@ -22,8 +22,8 @@
                    @if(isset($options['width']) && !empty($options['width']))
                    data-width="{{ $options['width'] }}"
                    @endif
-                   @if(!is_null($widget) && isset($widget[$key]) && $widget[$key] === $options['on']) checked
-                   @elseif(empty($id) && $options['checked']) checked @endif>
+                   @if(!is_null($dataContent) && array_key_exists($id, $dataContent) && $dataContent[$id] === $options['on']) checked
+                   @elseif(!is_null($dataContent && array_key_exists($id, $dataContent)) && $options['checked']) checked @endif>
         </label>
     </div>
 </div>

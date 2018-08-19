@@ -1,13 +1,14 @@
 <?php
 
-namespace Akopean\widgets\Widgets;
+namespace Akopean\widgets\Tests\stubs;
 
 use Akopean\widgets\AbstractWidget;
 
-class TextWidget extends AbstractWidget
+class TestWidget extends AbstractWidget
 {
     //Widget Data
     protected $data;
+
     /**
      * Constructor.
      *
@@ -15,9 +16,6 @@ class TextWidget extends AbstractWidget
      */
     public function __construct(array $config = [])
     {
-        $this->data = $config['data'];
-        unset($config['data']);
-
         parent::__construct($config);
     }
 
@@ -28,7 +26,7 @@ class TextWidget extends AbstractWidget
     public function run()
     {
         return view('widgets::widgets.text_widget', [
-            'data' => $this->data,
+            'data' => []
         ]);
     }
 

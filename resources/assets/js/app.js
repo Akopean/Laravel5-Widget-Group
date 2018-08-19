@@ -7,6 +7,7 @@ import FileUploader from './file-upload';
 import tinymce from 'tinymce/tinymce';
 import 'tinymce/themes/modern/theme';
 import Widget from './widget';
+import GoogleMap from './google-map';
 
 require('bootstrap');
 //window.TinyMCE = window.tinymce  = require('tinymce');
@@ -17,7 +18,7 @@ window.tinyMCE = window.tinymce = tinymce;
 window._sortable = require('sortablejs/Sortable');
 window.Widget = Widget;
 window.FileUploader = FileUploader;
-
+window.GoogleMap = GoogleMap;
 
 window.$(document).ready(function () {
     window.$.ajaxSetup({
@@ -33,4 +34,3 @@ window.$(document).on('click', '[data-toggle="widget-dropdown"]', function (e) {
     jQuery(this).parent().toggleClass('open');
     return false;
 });
-

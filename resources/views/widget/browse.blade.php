@@ -9,6 +9,14 @@
 
     <!-- App CSS -->
     <link rel="stylesheet" href="{{ widgets_asset('css/app.css') }}">
+    <script>
+        window.GOOGLEMAPDATA = {
+            key: '{{ config('widgets.googlemaps.key')}}',
+            lat: parseFloat({{ config('widgets.googlemaps.center.lat')}}),
+            lng: parseFloat({{ config('widgets.googlemaps.center.lng')}}),
+            zoom: parseInt({{ config('widgets.googlemaps.zoom')}}),
+        };
+    </script>
 @stop
 
 @section('page_header')
@@ -17,6 +25,14 @@
             <h1 class="page-title text-center">
                 Widgets
             </h1>
+        </div>
+        <div class="col-md-2">
+            <select name="show_group" class="form-control input-sm show_groups">
+                <option value="">All</option>
+                @foreach(config('widgets')['group'] as $key => $value)
+                <option {{ ($selected && $selected === $key) ? 'selected' : '' }} value="{{ $key }}">{{ _t('widgets::widgets.'.$value, $value) }}</option>
+                @endforeach
+            </select>
         </div>
     </div>
 @stop
@@ -50,19 +66,16 @@
                         <div class="widget-list">
                             <div class="widget-inactive">
                                 <div class="widget-inner" data-group="inactive" id="inactive">
-                                    @foreach(config('widgets')['group'] as $group => $value)
-                                        @if($group === 'inactive')
-                                            @foreach($collection->filter(function($item) use ($group) {
-                                                            return $item->group === $group;
-                                                         }) as $widget)
-                                                @include('widgets::widget.widget', [
-                                                    'id' => $widget['id'],
-                                                    'widget' => $widget['value'],
-                                                    'name' => $widget['name'],
-                                                    'value' => config('widgets')['widgets'][$widget['name']]
-                                                ])
-                                            @endforeach
-                                        @endif
+                                    @foreach($collection->filter(function($item) {
+                                                    return $item->group === 'inactive';
+                                                 }) as $widget)
+
+                                        @include('widgets::widget.widget', [
+                                            'id' => $widget['id'],
+                                            'widget' => $widget['value'],
+                                            'name' => $widget['name'],
+                                            'value' => config('widgets')['widgets'][$widget['name']]
+                                        ])
                                     @endforeach
                                 </div>
                             </div>
@@ -72,7 +85,7 @@
             </div>
             <div class="col-md-8">
                 <div class="row">
-                    @foreach(config('widgets')['group'] as $group => $value)
+                    @foreach($groups as $group => $value)
                         @if($group === 'inactive')
                             @continue
                         @endif
@@ -101,6 +114,7 @@
     <script type="text/template" id="qq-template-gallery">
         <div class="qq-uploader-selector qq-uploader qq-gallery"
              qq-drop-area-text="{{ __('widgets::widgets.DropFilesHere') }}">
+            <img class="upload_file_icon" hidden src="{{asset('vendor/Akopean/widgets/assets/css/fine_uploader_gif/file.png')}}" alt="">
             <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
                 <span class="qq-upload-drop-area-text-selector"></span>
             </div>
@@ -176,16 +190,15 @@
         </div>
     </script>
 @stop
-
-
 @section('javascript')
     <script>
         window.route = {
+            'widget_index': '{{ route('widget.widget') }}',
             'file_upload': '{{ route('widget.widget.fileUpload') }}',
             'file_session': '{{ route('widget.widget.fileSession') }}',
             'file_delete': '{{ route('widget.widget.fileDelete', '') }}',
             'widget_create': '{{ route('widget.widget.create') }}',
-            'widget_update': '{{ route('widget.widget') }}',
+            'widget_update': '{{ route('widget.widget.update') }}',
             'widget_drag': '{{ route("widget.widget.drag") }}',
             'widget_sort': '{{ route("widget.widget.sort") }}',
             'widget_delete': '{{ route('widget.widget.delete') }}',
@@ -194,6 +207,18 @@
     </script>
     <script src="{{ widgets_asset('js/app.js') }}"></script>
     <script>
+        var elements = document.getElementsByClassName('google_map_init');
+        google_map = new GoogleMap(elements, {
+            'key': GOOGLEMAPDATA.key,
+            'zoom': GOOGLEMAPDATA.zoom,
+            'center': {lat: GOOGLEMAPDATA.lat, lng: GOOGLEMAPDATA.lng},
+        });
+    </script>
+    <script>
+        $('.show_groups').change(function(e) {
+            $url = this.value ? '?group=' +this.value : '';
+            window.location = window.route['widget_index'] + $url;
+        });
 
         let fileUploader = [];
         /// FileUploader
@@ -219,8 +244,8 @@
         widget.createLeftGroup(el, route.widget_create);
 
         // Create All Sortable Widget Group;
-        @foreach(config('widgets')['group'] as $group => $value)
-            widget.createGroup('{{ $group }}', '{{ $value }}', route.widget_drag, route.widget_sort);
+        @foreach($groups as $group => $value)
+            widget.createGroup('{{ $group }}', route.widget_drag, route.widget_sort);
         @endforeach
 
         // Widget Form Delete

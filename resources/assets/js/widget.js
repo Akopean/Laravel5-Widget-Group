@@ -1,5 +1,6 @@
-window.jQuery = require('jquery');
 "use strict";
+
+import GoogleMap from './google-map';
 
 /**
  * Widget Class
@@ -48,27 +49,26 @@ export default class Widget {
      */
     tinyMceReInstall($this) {
         let that = this;
-        return new Promise((resolve, reject) => {
-            let settings = [];
-            let editorIds = [];
+        // return new Promise((resolve, reject) => {
+        let settings = [];
+        let editorIds = [];
 
-            $this.find('[data-rich="richTextBox"]').each(function () {
-                editorIds.push(this.id);
-            });
-            if (editorIds.length) {
-                let editors = $('#' + editorIds.join(', #'));
-                editors.each(function () {
-                    settings[this.id] = window.tinyMCE.get(this.id).settings;
-                    window.tinyMCE.get(this.id).remove();
-                });
-
-                // Re-initialize editors
-                editors.each(function () {
-                    let setting = settings[this.id];
-                    that.tinyMceInit('.widgetRichTextBox', setting);
-                });
-            }
+        $this.find('[data-rich="richTextBox"]').each(function () {
+            editorIds.push(this.id);
         });
+        if (editorIds.length) {
+            let editors = $('#' + editorIds.join(', #'));
+            editors.each(function () {
+                settings[this.id] = window.tinyMCE.get(this.id).settings;
+                window.tinyMCE.get(this.id).remove();
+            });
+            // Re-initialize editors
+            editors.each(function () {
+                let setting = settings[this.id];
+                that.tinyMceInit('.widgetRichTextBox', setting);
+            });
+        }
+
     }
 
     /**
@@ -92,37 +92,12 @@ export default class Widget {
                 url: route,
                 data: data
             }).then(function (response) {
-                // console.log('server:', response);
-
-                /*    // here we will handle errors and validation messages
-                 if ( ! data.success) {
-
-                 // handle errors for name ---------------
-                 if (data.errors.name) {
-                 $('#name-group').addClass('has-error'); // add the error class to show red input
-                 $('#name-group').append('<div class="help-block">' + data.errors.name + '</div>'); // add the actual error message under our input
-                 }
-
-                 // handle errors for email ---------------
-                 if (data.errors.email) {
-                 $('#email-group').addClass('has-error'); // add the error class to show red input
-                 $('#email-group').append('<div class="help-block">' + data.errors.email + '</div>'); // add the actual error message under our input
-                 }
-
-                 // handle errors for superhero alias ---------------
-                 if (data.errors.superheroAlias) {
-                 $('#superhero-group').addClass('has-error'); // add the error class to show red input
-                 $('#superhero-group').append('<div class="help-block">' + data.errors.superheroAlias + '</div>'); // add the actual error message under our input
-                 }
-                 }
-                 */
                 $this.closest('#widget').removeClass("open");
                 toastr.success('Saved');
-            })
-                .catch(function (error) {
-                    console.log(error);
-                    toastr.error('Error', 'Inconceivable!');
-                });
+            }).catch(function (error) {
+                console.log(error);
+                toastr.error('Error', 'Inconceivable!');
+            });
         })
     }
 
@@ -161,8 +136,6 @@ export default class Widget {
      */
     createLeftGroup(el, route) {
         let that = this;
-        //const el = document.getElementById('left');
-        //   url   : '{{ route('admin.widget.create') }}',
         window._sortable.create(el, {
             group: {
                 name: 'l',
@@ -180,7 +153,7 @@ export default class Widget {
                 const $that = $(evt.from);
 
 
-                //disable  left widget zone  dragging
+                //disable left widget zone dragging
                 if ($this.data('group') === 'left') {
                     return false;
                 }
@@ -203,9 +176,16 @@ export default class Widget {
                     data: data
                 }).then(function (response) {
                     // console.log(response);
-                    let data = response.data;
+                    let data = JSON.parse(response.data);
                     if (data) {
                         $(itemEl).find('.widgetForm input[name=id]').val(data.id);
+                      const google_map = new GoogleMap($(itemEl).find('.google_map_init'), {
+                            'key': GOOGLEMAPDATA.key,
+                            'zoom': GOOGLEMAPDATA.zoom,
+                            'center': {lat: GOOGLEMAPDATA.lat, lng: GOOGLEMAPDATA.lng},
+                        });
+                        google_map.renderMap();
+
                         toastr.success('Saved');
                     }
                     else {
@@ -222,13 +202,12 @@ export default class Widget {
     /**
      * Create Widget Sortable Group
      * @param $group
-     * @param $value
      * @param urlDrag - server drag adress
      * @param urlSort - server sort adress
      */
-    createGroup($group, $value, urlDrag, urlSort) {
+    createGroup($group, urlDrag, urlSort) {
         let that = this;
-        window._sortable.create(document.getElementById($group), {
+        const $sortable = window._sortable.create(document.getElementById($group), {
             group: {
                 name: 'left',
                 put: ['l', 'left']
@@ -265,15 +244,16 @@ export default class Widget {
                     toastr.error('Error', error);
                 });
 
-
-            },            // Element dragging started
+            },
+            // Element dragging started
             onStart: function (evt) {
                 //evt.oldIndex;  // element index within parent
                 $(evt.item).removeClass('open');
+                //  $sortable.option("disabled", true);
             },
             // Changed sorting within list
             onUpdate: function (evt) {
-                console.log("drag update");
+                // console.log("drag update");
                 const itemEl = evt.item;  // dragged HTMLElement
                 const $this = $(evt.to);
                 const $that = $(evt.from);
@@ -281,14 +261,12 @@ export default class Widget {
                 if ($this.data('group') !== $that.data('group')) {
                     return false;
                 }
-
                 const data = {
                     'name': $(itemEl).data('widget'),
                     'group': $this.data('group'),
                     'index': evt.newIndex,
                     'oldIndex': evt.oldIndex
                 };
-
                 window.axios({
                     method: 'post',
                     url: urlSort,
@@ -300,6 +278,7 @@ export default class Widget {
                 }).catch(function (error) {
                     toastr.error('Error', error);
                 });
+
             }
         });
     }

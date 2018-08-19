@@ -32,8 +32,7 @@ class WidgetGroup
         foreach ($widgets as $widget){
             $value = $widget['value'];
             if (!empty($value) && !is_null($value)){
-                Widget::group($widget_zone)->addWidget($this->config['widgets'][$widget->name]['namespace'], $value);
-
+                Widget::group($widget_zone)->addWidget($this->config['widgets'][$widget->name]['namespace'], ['data' => $value]);
             }
         }
         echo Widget::group($widget_zone)->display();

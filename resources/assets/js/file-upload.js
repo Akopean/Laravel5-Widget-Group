@@ -89,10 +89,13 @@ export default class FileUploader {
                     toastr.success('Deleted', `${name} Deleted`);
                   console.log(e, xhr, isError);
                 },
-                onSubmitted: function (event, id, name) {
+                onSubmitted: function (event, name) {
                     //console.log('submitted');
                     toastr.success('Saved', `${name} has been uploaded`);
-
+                    let ext = name.split('.');
+                    ext = ext[ext.length-1].toLowerCase();
+                    if(['jpg' , 'jpeg', 'png', 'bmp', 'gif', 'svg'].lastIndexOf(ext) === -1)
+                        $('.qq-thumbnail-selector').attr('src', $('.upload_file_icon').attr('src'));
                 },
             },
         }, session));

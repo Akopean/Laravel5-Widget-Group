@@ -16,27 +16,15 @@
             <form method="post" class="widgetForm" enctype="multipart/form-data">
                 <input type="hidden" @if(!empty($id)) value="{{ $id }}" @endif name="id">
                 @foreach($value['fields'] as $key => $options)
-                    @if ($options['type'] == "text")
-                        @include('widgets::particles.text')
-                    @elseif ($options['type'] == "number")
-                        @include('widgets::particles.number')
-                    @elseif($options['type'] == "text_area")
-                        @include('widgets::particles.text_area')
-                    @elseif($options['type'] == "rich_text_box")
-                        @include('widgets::particles.rich_text_box')
-                    @elseif($options['type'] == "checkbox")
-                        @include('widgets::particles.checkbox')
-                    @elseif($options['type'] == "radio")
-                        @include('widgets::particles.radio')
-                    @elseif($options['type'] == "image" || $options['type'] == "file")
-                        @include('widgets::particles.file')
-                    @endif
-                @endforeach
-                <button type="button" id="widgetDelete" data-widgetId="@if(!empty($id)){{ $id }}@endif"
-                        class="btn btn-danger pull-right">{{ _t('widget.delete', 'Delete') }}</button>
-                <button type="submit" id="widgetSubmit"
-                        class="btn btn-primary float-right">{{ _t('widget.save', 'Save') }}</button>
-            </form>
-        </div>
-    </div>
+
+                    {!! app('widgets')->formField($name, $key, $options, $widget) !!}
+
+               @endforeach
+               <button type="button" id="widgetDelete" data-widgetId="@if(!empty($id)){{ $id }}@endif"
+                       class="btn btn-danger pull-right">{{ _t('widget.delete', 'Delete') }}</button>
+               <button type="submit" id="widgetSubmit"
+                       class="btn btn-primary float-right">{{ _t('widget.save', 'Save') }}</button>
+           </form>
+       </div>
+   </div>
 </div>

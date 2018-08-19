@@ -7,6 +7,7 @@ namespace Akopean\widgets\Models;
  * @property json $value
  * @property string $group
  * @property int $index
+ * @property int $name
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
