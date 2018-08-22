@@ -12454,11 +12454,13 @@ function FileUploader(options) {
             //itemLimit: 5,
         },
         callbacks: {
+
             onUpload: function onUpload() {
                 var fieldName = jQuery(el).data('fieldName');
                 var fieldId = jQuery(el).parent('.widgetForm').children('input[name="id"]').val();
                 this.setParams({ name: fieldName, id: fieldId });
             },
+
             onValidate: function onValidate(fileData) {
                 //console.log('validate');
                 var allowedExts = jQuery(el).data('fieldValidate').split(',');
@@ -12471,18 +12473,27 @@ function FileUploader(options) {
                 }
                 return true;
             },
+
             onSubmitDelete: function onSubmitDelete(id) {
                 var fieldName = jQuery(el).data('fieldName');
                 var fieldId = jQuery(el).parent('.widgetForm').children('input[name="id"]').val();
                 this.setDeleteFileParams({ name: fieldName, id: fieldId }, id);
             },
+
+            onComplete: function onComplete(id, name, response) {
+                if (!response.success) {
+                    toastr.error(response.message, '' + name);
+                } else {
+                    toastr.success('Saved', name + ' has been uploaded');
+                }
+            },
+
             onDeleteComplete: function onDeleteComplete(e, xhr, isError) {
                 toastr.success('Deleted', name + ' Deleted');
-                console.log(e, xhr, isError);
             },
+
             onSubmitted: function onSubmitted(event, name) {
                 //console.log('submitted');
-                toastr.success('Saved', name + ' has been uploaded');
                 var ext = name.split('.');
                 ext = ext[ext.length - 1].toLowerCase();
                 if (['jpg', 'jpeg', 'png', 'bmp', 'gif', 'svg'].lastIndexOf(ext) === -1) $('.qq-thumbnail-selector').attr('src', $('.upload_file_icon').attr('src'));
@@ -12496,21 +12507,21 @@ function FileUploader(options) {
 
 /*
 
-onSessionRequestComplete: function (response, success, xhrOrXdr) {
-    //console.log('sessionRequestComplete');
-    //  console.log(response, success, xhrOrXdr);
-},
-onAllComplete: function (event, id, name, response) {
-    // console.log('allcomplete');
-    //console.log(event, id, name, response);
-    //uploader.drawThumbnail(fileId, document.getElementById('picture'), 200, true);
-},
-onComplete: function (event, id, name, response) {
-    //console.log('complete');
-    // console.log(event, id, name, response);
-    //uploader.drawThumbnail(fileId, document.getElementById('picture'), 200, true);
-},
-*/
+ onSessionRequestComplete: function (response, success, xhrOrXdr) {
+ //console.log('sessionRequestComplete');
+ //  console.log(response, success, xhrOrXdr);
+ },
+ onAllComplete: function (event, id, name, response) {
+ // console.log('allcomplete');
+ //console.log(event, id, name, response);
+ //uploader.drawThumbnail(fileId, document.getElementById('picture'), 200, true);
+ },
+ onComplete: function (event, id, name, response) {
+ //console.log('complete');
+ // console.log(event, id, name, response);
+ //uploader.drawThumbnail(fileId, document.getElementById('picture'), 200, true);
+ },
+ */
 
 /***/ }),
 /* 33 */

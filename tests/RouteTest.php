@@ -2,8 +2,9 @@
 
 namespace Akopean\widgets\Tests;
 
+use Akopean\widgets\Commands\UploadServerFile;
 use Akopean\widgets\Models\Widget;
-use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
 
 class RouteTest extends TestCase
@@ -177,48 +178,120 @@ class RouteTest extends TestCase
         $this->assertSessionHasErrors(['group', 'name', 'index', 'oldGroup', 'oldIndex']);
     }
 
-    /** test */
-      public function testManipulateFileRoutes()
-      {
-          Storage::fake('file');
+    /**
+     * @test
+     * @return void
+     */
+    public function can_route_file_upload()
+    {
+        Storage::fake('file');
+        Bus::fake();
 
-          $widget = $this->widget;
-
-          $fileUpload = $this->call('POST', route('widget.widget.fileUpload'), [
-              'name' => 'File',
-              'id' => $widget->id,
-              'qquuid' => 'aa96222b-311e-4ed0-94f0-9487125392c5',
-              'qqfilename' => 'file.png',
-              'qqtotalfilesize' => 30856,
-              'qqfile' => UploadedFile::fake()->image(realpath(__DIR__ . '/temp/file.png')),
-          ]);
-
-          $this->assertResponseStatus($fileUpload->status());
-
-          // Assert a file exist
-          Storage::disk('file')->assertExists(config('widgets.storage.slug') . DIRECTORY_SEPARATOR . date('FY') . DIRECTORY_SEPARATOR . 'file.png');
-
-          // Assert a file does not exist
-          Storage::disk('file')->assertMissing('missing.jpg');
+        $widget = $this->widget;
 
 
-          $fileSession = $this->call('GET', route('widget.widget.fileSession'), [
-              'id' => $widget->id,
-              'name' => 'File',
-          ]);
-          // Assert response status
-          $this->assertResponseStatus($fileSession->status());
+        $fileUpload = $this->call('POST', route('widget.widget.fileUpload'), [
+            'name' => 'File',
+            'id' => $widget->id,
+            'qquuid' => 'aa96222b-311e-4ed0-94f0-9487125392c5',
+            'qqfilename' => 'file.png',
+            'qqtotalfilesize' => 30856,
+            'qqfile' => 'dfgsdf',
+        ]);
 
-          $widget_delete = Widget::find($widget->id);
+        $this->assertEquals(201, $fileUpload->status(),
+            route('widget.widget.fileUpload') . ' did not return a 201');
+    }
 
-          $fileSession = $this->call('delete',
-              route('widget.widget.fileDelete', ['uuid' => $widget_delete->value['File'][0]['qquuid']]), [
-                  'id' => $widget->id,
-                  'name' => 'File',
-              ]);
+    /**
+     * @test
+     * @return void
+     */
+    public function can_route_file_delete()
+    {
+        Storage::fake('file');
+        Bus::fake();
 
-          $this->assertResponseStatus($fileSession->status());
+        $widget = $this->widget;
 
-          Storage::disk('file')->assertMissing(config('widgets.storage.slug') . DIRECTORY_SEPARATOR . date('FY') . DIRECTORY_SEPARATOR . 'file.png');
-      }
+
+
+        $fileDelete = $this->call('delete',
+            route('widget.widget.fileDelete', ['uuid' => 'test']), [
+                'id' => $widget->id,
+                'name' => 'File',
+            ]);
+
+        $this->assertEquals(202, $fileDelete->status(),
+            route('widget.widget.fileDelete', ['uuid' => 'test']) . ' did not return a 202');
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function can_route_file_session()
+    {
+        $widget = $this->widget;
+
+        $fileSession = $this->call('GET', route('widget.widget.fileSession'), [
+            'id' => $widget->id,
+            'name' => 'File',
+        ]);
+
+        // Assert response status
+        $this->assertEquals(200, $fileSession->status(),
+            route('widget.widget.fileSession') . ' did not return a 200');
+    }
+
 }
+
+
+
+/*    Storage::fake('file');
+        Bus::fake();
+
+        $widget = $this->widget;
+
+
+
+        $fileUpload = $this->call('POST', route('widget.widget.fileUpload'), [
+            'name' => 'File',
+            'id' => $widget->id,
+            'qquuid' => 'aa96222b-311e-4ed0-94f0-9487125392c5',
+            'qqfilename' => 'file.png',
+            'qqtotalfilesize' => 30856,
+            'qqfile' => 'dfgsdf',
+        ]);
+
+        Bus::assertDispatched(UploadServerFile::class, function () {
+            return true;
+        });
+
+        $this->assertResponseStatus($fileUpload->status());
+
+         // Assert a file exist
+        //  Storage::disk('file')->assertExists(config('widgets.storage.slug') . DIRECTORY_SEPARATOR . date('FY') . DIRECTORY_SEPARATOR . 'file.png');
+
+         // Assert a file does not exist
+         Storage::disk('file')->assertMissing('missing.jpg');
+
+
+         $fileSession = $this->call('GET', route('widget.widget.fileSession'), [
+             'id' => $widget->id,
+             'name' => 'File',
+         ]);
+         // Assert response status
+         $this->assertResponseStatus($fileSession->status());
+
+         $widget_delete = Widget::find($widget->id);
+
+         $fileSession = $this->call('delete',
+             route('widget.widget.fileDelete', ['uuid' => $widget_delete->value['File'][0]['qquuid']]), [
+                 'id' => $widget->id,
+                 'name' => 'File',
+             ]);
+
+         $this->assertResponseStatus($fileSession->status());
+
+         Storage::disk('file')->assertMissing(config('widgets.storage.slug') . DIRECTORY_SEPARATOR . date('FY') . DIRECTORY_SEPARATOR . 'file.png');*/

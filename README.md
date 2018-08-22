@@ -1,7 +1,7 @@
 # Laravel Widget Group
 
 <p align="center">
-<a href="https://travis-ci.org/Akopean/widgetss">
+<a href="https://travis-ci.org/Akopean/widgets">
 <img src="https://travis-ci.org/Akopean/widgets.svg?branch=master" alt="Build Status"></a>
 </p>
 

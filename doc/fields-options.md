@@ -1,4 +1,4 @@
-## Additional Field Options
+## Additional Fields Options
 
 #### Find out how to use these additional details below:
 

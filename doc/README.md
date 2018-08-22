@@ -13,4 +13,4 @@ First meeting
 
 * [Install Widget](start-installation.md)
 * [Fields Options](fields-options.md)
-* [Create New Widget](new-widgets.md)
+* [Create New Widget](create-widget.md)

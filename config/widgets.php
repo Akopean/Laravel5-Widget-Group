@@ -80,16 +80,16 @@ return [
         ],
         'messages' => [
             'file.*.required' => 'Please upload an image',
-            'file.*.mimes' => 'Only jpeg,png and svg images are allowed',
+            'file.*.mimes' => 'This mimes does not allowed',
             'file.*.max' => 'Sorry! Maximum allowed size for an image is ...MB',
         ],
         'image' => [
             'path' => [
-                'full_path' => 'widgets',
-                'crop' => 'crop',
+              //  'full' => 'widgets',
+                'icon' => 'icon',
             ],
             'size' => [
-                'icon_size' => [
+                'icon' => [
                     'width' => 200,
                     'height' => 200,
                 ],
@@ -258,7 +258,7 @@ return [
                     'max' => '200',//MB
                  //   'multiple' => true, // default: false
                     'rules' => [
-                        'mimes' => 'jpg,jpeg,png,svg',
+                        'mimes' => 'svg,png,jpg,jpeg',
                         'size' => [
                             'min' => 1,
                             'max' => 2048,

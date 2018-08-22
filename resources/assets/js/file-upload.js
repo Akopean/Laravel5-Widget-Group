@@ -18,7 +18,7 @@ export default class FileUploader {
         let el = options.el;
         let session = {};
 
-        if(!jQuery(el).closest('#left').length) {
+        if (!jQuery(el).closest('#left').length) {
             session = {
                 session: {
                     endpoint: options.route.session,
@@ -63,11 +63,13 @@ export default class FileUploader {
                 //itemLimit: 5,
             },
             callbacks: {
+
                 onUpload: function () {
                     let fieldName = jQuery(el).data('fieldName');
                     let fieldId = jQuery(el).parent('.widgetForm').children('input[name="id"]').val();
                     this.setParams({name: fieldName, id: fieldId});
                 },
+
                 onValidate: function (fileData) {
                     //console.log('validate');
                     const allowedExts = jQuery(el).data('fieldValidate').split(',');
@@ -80,21 +82,31 @@ export default class FileUploader {
                     }
                     return true;
                 },
-                onSubmitDelete: function(id){
+
+                onSubmitDelete: function (id) {
                     let fieldName = jQuery(el).data('fieldName');
                     let fieldId = jQuery(el).parent('.widgetForm').children('input[name="id"]').val();
                     this.setDeleteFileParams({name: fieldName, id: fieldId}, id);
                 },
+
+                onComplete: function (id, name, response) {
+                    if (!response.success) {
+                        toastr.error(response.message, `${name}`);
+                    } else {
+                        toastr.success('Saved', `${name} has been uploaded`);
+                    }
+                },
+
                 onDeleteComplete: function (e, xhr, isError) {
                     toastr.success('Deleted', `${name} Deleted`);
-                  console.log(e, xhr, isError);
+
                 },
+
                 onSubmitted: function (event, name) {
                     //console.log('submitted');
-                    toastr.success('Saved', `${name} has been uploaded`);
                     let ext = name.split('.');
-                    ext = ext[ext.length-1].toLowerCase();
-                    if(['jpg' , 'jpeg', 'png', 'bmp', 'gif', 'svg'].lastIndexOf(ext) === -1)
+                    ext = ext[ext.length - 1].toLowerCase();
+                    if (['jpg', 'jpeg', 'png', 'bmp', 'gif', 'svg'].lastIndexOf(ext) === -1)
                         $('.qq-thumbnail-selector').attr('src', $('.upload_file_icon').attr('src'));
                 },
             },
@@ -104,18 +116,18 @@ export default class FileUploader {
 
 /*
 
-onSessionRequestComplete: function (response, success, xhrOrXdr) {
-    //console.log('sessionRequestComplete');
-    //  console.log(response, success, xhrOrXdr);
-},
-onAllComplete: function (event, id, name, response) {
-    // console.log('allcomplete');
-    //console.log(event, id, name, response);
-    //uploader.drawThumbnail(fileId, document.getElementById('picture'), 200, true);
-},
-onComplete: function (event, id, name, response) {
-    //console.log('complete');
-    // console.log(event, id, name, response);
-    //uploader.drawThumbnail(fileId, document.getElementById('picture'), 200, true);
-},
-*/
+ onSessionRequestComplete: function (response, success, xhrOrXdr) {
+ //console.log('sessionRequestComplete');
+ //  console.log(response, success, xhrOrXdr);
+ },
+ onAllComplete: function (event, id, name, response) {
+ // console.log('allcomplete');
+ //console.log(event, id, name, response);
+ //uploader.drawThumbnail(fileId, document.getElementById('picture'), 200, true);
+ },
+ onComplete: function (event, id, name, response) {
+ //console.log('complete');
+ // console.log(event, id, name, response);
+ //uploader.drawThumbnail(fileId, document.getElementById('picture'), 200, true);
+ },
+ */

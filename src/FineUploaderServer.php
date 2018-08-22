@@ -29,32 +29,36 @@ class FineUploaderServer
      */
     public function __construct(Widget $widget)
     {
-        $this->filesystem = config('widgets.storage.disk', 'public');
-        $this->slug = config('widgets.storage.slug', 'widgets');
         $this->widget = $widget;
     }
 
     /**
-     * @param array $form_data
+     * @param $form_data
+     * @param $filesystem
+     * @param $slug
      */
-    public function upload($form_data)
+    public function upload($form_data, $filesystem, $slug)
     {
 
         $this->field_options = $this->widget->getFieldOptions($form_data['name']);
         $this->form_data = $form_data;
+        $this->filesystem = $filesystem;
+        $this->slug = $slug;
 
-        $this->uploadFile();
-    }
-
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
-    private function uploadFile()
-    {
-       $files = null;
         $qqfile = $this->form_data['qqfile'];
 
         $this->validateFileType();
+
+        $this->uploadFile($qqfile);
+    }
+
+    /**
+     * @param $qqfile
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function uploadFile($qqfile)
+    {
+        $files = null;
 
         $file_size = $this->form_data['qqtotalfilesize'];
 
@@ -69,14 +73,14 @@ class FineUploaderServer
         $files['original'] = [
             'path' => $original_path,
             'url' => Storage::disk($this->filesystem)->url($original_path),
-            ];
+        ];
 
         if ($this->field_options['type'] === 'image') {
             $icon = null;
             //start cropping
             if ($qqfile->getClientOriginalExtension() !== 'gif' || $qqfile->getClientOriginalExtension() !== 'svg') {
 
-                $icon = $this->createIcon($qqfile,$original_name . '_icon.' . $extension);
+                $icon = $this->createIcon($qqfile, $full_name);
                 $files['icon'] = [
                     'path' => $icon,
                     'url' => Storage::disk($this->filesystem)->url($icon),
@@ -100,7 +104,6 @@ class FineUploaderServer
 
     /**
      * Validate File Field
-     * @return bool|\Illuminate\Http\JsonResponse
      */
     private function validateFileType()
     {
@@ -112,9 +115,9 @@ class FineUploaderServer
             $rules = \config('widgets.file.rules');
         }
 
-        return $this->validate($this->form_data,
+        $this->validate($this->form_data,
             [
-                $this->form_data['name'] . '.*' =>
+                'qqfile' =>
                     'required' .
                     (isset($rules['mimes']) ? '|mimes:' . $rules['mimes'] : '') .
                     (isset($rules['size']['min']) ? '|min:' . $rules['size']['min'] : '') .
@@ -127,21 +130,16 @@ class FineUploaderServer
      * @param $data
      * @param $rules
      * @param $messages
-     * @return bool|\Illuminate\Http\JsonResponse
+     * @return bool
+     * @throws \Exception
      */
     private function validate($data, $rules, $messages)
     {
         $validator = Validator::make($data, $rules, $messages);
 
         if ($validator->fails()) {
-            return Response::json([
-                'error' => true,
-                'message' => $validator->messages()->first(),
-                'code' => 400,
-            ], 400);
+            throw new \Exception($validator->messages()->first());
         }
-
-        return true;
     }
 
     /**
@@ -164,92 +162,53 @@ class FineUploaderServer
     }
 
     /**
-     * Cropping image
-     * @param $photo
-     * @param string $filename
-     * @param array $size = ['width', 'height']
-     * @return \Intervention\Image\Image
-     */
-    public function crop($photo, $filename, $size)
-    {
-        $manager = new ImageManager();
-
-
-        $image = $manager->make($photo)->resize($size['width'], $size['height'],
-            function ($constraint) {
-                $constraint->aspectRatio();
-            })->save(public_path('images' . DIRECTORY_SEPARATOR . $filename));
-
-        return $image;
-    }
-
-    /**
      * Create Icon From Original
      * @param $photo
      * @param path
      * @return string
      */
-    public function createIcon($photo, $path)
+    protected function createIcon($photo, $name)
     {
-        $image = $this->crop($photo, $path, \config('widgets.file.image.size.icon_size'));
+        $params = config('widgets.file.image.size.icon');
 
-        $saved_image_uri = $image->dirname . DIRECTORY_SEPARATOR . $image->basename;
+        $manager = new ImageManager();
 
-        $uploaded_icon_image = Storage::disk($this->filesystem)->putFileAs(
-            $this->generatePath() . Config::get('widgets.file.image.path.crop'),
-            new File($saved_image_uri),
-            $path);
+        $image = $manager->make($photo)->resize($params['width'], $params['height']);
 
-        $image->destroy();
-        unlink($saved_image_uri);
+        $path = $this->generatePath() . Config::get('widgets.file.image.path.icon') . DIRECTORY_SEPARATOR . $name;
 
-        return $uploaded_icon_image;
+        Storage::disk($this->filesystem)->put(
+            $path,
+            (string)$image->encode()
+        );
+
+        return $path;
     }
 
     /**
-     *  * Delete File From Session folder, based on original filename
-     * @param $originalFilename
+     * Delete File From Session folder, based on original filename
+     * @param $file_data
+     * @param $filesystem
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function delete($originalFilename)
+    public function delete($file_data, $filesystem)
     {
-
-        $full_size_dir = Config::get('images.full_size');
-        $icon_size_dir = Config::get('images.icon_size');
-
-        $sessionImage = Widget::where('original_name', 'like', $originalFilename)->first();
-
-
-        if (empty($sessionImage)) {
-            return Response::json([
-                'error' => true,
-                'code' => 400,
-            ], 400);
-
+        if (Storage::disk($filesystem)->has(($file_data['paths']['original']['path']))) {
+            if (!Storage::disk($filesystem)->delete($file_data['paths']['original']['path'])) {
+                throw new \Exception('Error while deleting original file');
+            }
         }
 
-        $full_path1 = $full_size_dir . $sessionImage->filename;
-        $full_path2 = $icon_size_dir . $sessionImage->filename;
-
-        if (File::exists($full_path1)) {
-            File::delete($full_path1);
+        if (isset($file_data['paths']['icon']) && Storage::disk($filesystem)->has(($file_data['paths']['icon']['path']))
+        ) {
+            if (!Storage::disk($filesystem)->delete($file_data['paths']['icon']['path'])) {
+                throw new \Exception('Error while deleting icon file');
+            }
         }
-
-        if (File::exists($full_path2)) {
-            File::delete($full_path2);
-        }
-
-        if (!empty($sessionImage)) {
-            $sessionImage->delete();
-        }
-
-        return Response::json([
-            'error' => false,
-            'code' => 200,
-        ], 200);
     }
 
-    function sanitize($string, $force_lowercase = true, $anal = false)
+    public function sanitize($string, $force_lowercase = true, $anal = false)
     {
         $strip = [
             "~",
