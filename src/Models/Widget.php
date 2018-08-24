@@ -43,7 +43,7 @@ class Widget extends Model
      * @return \Illuminate\Config\Repository|mixed|null
      */
     public function getFieldOptions($field) {
-        if (config($this->configPath  . $this->name . '.fields.' . $field)) {
+        if (config($this->configPath . $this->name . '.fields.' . $field)) {
             return config($this->configPath  . $this->name . '.fields.' . $field);
         }
         return null;

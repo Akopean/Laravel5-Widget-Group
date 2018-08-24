@@ -30,7 +30,7 @@
             <select name="show_group" class="form-control input-sm show_groups">
                 <option value="">All</option>
                 @foreach(config('widgets')['group'] as $key => $value)
-                <option {{ ($selected && $selected === $key) ? 'selected' : '' }} value="{{ $key }}">{{ _t('widgets::widgets.'.$value, $value) }}</option>
+                <option {{ (isset($selected) && $selected === $key) ? 'selected' : '' }} value="{{ $key }}">{{ _t('widgets::widgets.'.$value, $value) }}</option>
                 @endforeach
             </select>
         </div>
@@ -216,7 +216,7 @@
     </script>
     <script>
         $('.show_groups').change(function(e) {
-            $url = this.value ? '?group=' +this.value : '';
+            $url = this.value ? '/group/' +this.value : '';
             window.location = window.route['widget_index'] + $url;
         });
 

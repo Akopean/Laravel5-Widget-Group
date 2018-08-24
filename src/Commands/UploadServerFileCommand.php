@@ -6,7 +6,7 @@ use Akopean\widgets\Models\Widget;
 use Illuminate\Console\Command;
 use Akopean\widgets\FineUploaderServer;
 
-class UploadServerFile extends Command
+class UploadServerFileCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -52,6 +52,6 @@ class UploadServerFile extends Command
      */
     public function handle()
     {
-            $this->fineUpload->upload($this->request, $this->filesystem, $this->slug);
+        $this->fineUpload->upload($this->request, $this->filesystem, $this->slug);
     }
 }

@@ -16,6 +16,7 @@ class Widgets{
  
      public static function routes()
     {
+
         require __DIR__.'/../routes/routes.php';
     }
 

@@ -5,12 +5,9 @@ namespace Akopean\widgets;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Config;
 use Intervention\Image\ImageManager;
 use Akopean\widgets\Models\Widget;
-use \Illuminate\Http\File;
-
 
 class FineUploaderServer
 {
@@ -195,16 +192,12 @@ class FineUploaderServer
     public function delete($file_data, $filesystem)
     {
         if (Storage::disk($filesystem)->has(($file_data['paths']['original']['path']))) {
-            if (!Storage::disk($filesystem)->delete($file_data['paths']['original']['path'])) {
-                throw new \Exception('Error while deleting original file');
-            }
+            Storage::disk($filesystem)->delete($file_data['paths']['original']['path']);
         }
 
         if (isset($file_data['paths']['icon']) && Storage::disk($filesystem)->has(($file_data['paths']['icon']['path']))
         ) {
-            if (!Storage::disk($filesystem)->delete($file_data['paths']['icon']['path'])) {
-                throw new \Exception('Error while deleting icon file');
-            }
+            Storage::disk($filesystem)->delete($file_data['paths']['icon']['path']);
         }
     }
 

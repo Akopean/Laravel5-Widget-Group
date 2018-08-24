@@ -5,9 +5,8 @@ namespace Akopean\widgets\Commands;
 use Akopean\widgets\Models\Widget;
 use Illuminate\Console\Command;
 use Akopean\widgets\FineUploaderServer;
-use Illuminate\Http\Request;
 
-class DeleteServerFile extends Command
+class DeleteServerFileCommand extends Command
 {
     /**
      * The name and signature of the console command.

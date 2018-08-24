@@ -2,7 +2,6 @@
 
 namespace Akopean\widgets\Tests;
 
-use Akopean\widgets\Commands\UploadServerFile;
 use Akopean\widgets\Models\Widget;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
@@ -33,8 +32,6 @@ class RouteTest extends TestCase
 
         $this->group = key($this->config['group']);
 
-        //config(['widgets.storage.disk' => 'file']);
-
         $this->withFactories(__DIR__ . '/database/factories');
 
         $this->widget = factory(Widget::class)->create();
@@ -49,12 +46,26 @@ class RouteTest extends TestCase
         $http_widget = $this->call('GET', route('widget.widget'));
 
         $this->assertEquals(200, $http_widget->status(), route('widget.widget') . ' did not return a 200');
+    }
 
-        $http_widget_group = $this->call('GET', route('widget.widget'), ['group' => $this->group]);
+    /**
+     * @test
+     * @return void
+     */
+    public function can_route_group()
+    {
+
+        $http_widget_group = $this->call('GET', route('widget.widget.group',['select_group' => $this->group]));
 
         $this->assertEquals(200, $http_widget_group->status(),
-            route('widget.widget') . '/' . $this->group . ' did not return a 200');
+            route('widget.widget.group', ['select_group' => $this->group]) . ' did not return a 200');
+
+        //Fail Request Params select_group
+        $http_widget_group = $http_widget_group = $this->call('GET', route('widget.widget.group',['select_group' => 'fail-select-group']));
+
+        $this->assertEquals(404, $http_widget_group->status(), route('widget.widget.group', ['select_group' => $this->group]) . ' did not return a 404');
     }
+
 
     /**
      * @test
@@ -201,6 +212,14 @@ class RouteTest extends TestCase
 
         $this->assertEquals(201, $fileUpload->status(),
             route('widget.widget.fileUpload') . ' did not return a 201');
+
+        //Missing Request Params id
+        $fileDelete = $this->call('POST',route('widget.widget.fileUpload'), [
+
+            ]);
+
+        $this->assertEquals(400, $fileDelete->status(),
+            route('widget.widget.fileUpload') . 'Missing params id');
     }
 
     /**
@@ -215,7 +234,6 @@ class RouteTest extends TestCase
         $widget = $this->widget;
 
 
-
         $fileDelete = $this->call('delete',
             route('widget.widget.fileDelete', ['uuid' => 'test']), [
                 'id' => $widget->id,
@@ -224,6 +242,25 @@ class RouteTest extends TestCase
 
         $this->assertEquals(202, $fileDelete->status(),
             route('widget.widget.fileDelete', ['uuid' => 'test']) . ' did not return a 202');
+
+        //Missing Request Params id
+        $fileDelete = $this->call('delete',
+            route('widget.widget.fileDelete', ['uuid' => 'test']), [
+                'name' => 'File',
+            ]);
+
+        $this->assertEquals(400, $fileDelete->status(),
+            route('widget.widget.fileDelete', ['uuid' => 'test']) . 'Missing params id');
+
+        //Missing Request Params name
+        $fileDelete = $this->call('delete',
+            route('widget.widget.fileDelete', ['uuid' => 'test']), [
+                'id' => $widget->id,
+            ]);
+
+        $this->assertEquals(400, $fileDelete->status(),
+            route('widget.widget.fileDelete', ['uuid' => 'test']) . 'Missing params name');
+
     }
 
     /**
@@ -245,53 +282,3 @@ class RouteTest extends TestCase
     }
 
 }
-
-
-
-/*    Storage::fake('file');
-        Bus::fake();
-
-        $widget = $this->widget;
-
-
-
-        $fileUpload = $this->call('POST', route('widget.widget.fileUpload'), [
-            'name' => 'File',
-            'id' => $widget->id,
-            'qquuid' => 'aa96222b-311e-4ed0-94f0-9487125392c5',
-            'qqfilename' => 'file.png',
-            'qqtotalfilesize' => 30856,
-            'qqfile' => 'dfgsdf',
-        ]);
-
-        Bus::assertDispatched(UploadServerFile::class, function () {
-            return true;
-        });
-
-        $this->assertResponseStatus($fileUpload->status());
-
-         // Assert a file exist
-        //  Storage::disk('file')->assertExists(config('widgets.storage.slug') . DIRECTORY_SEPARATOR . date('FY') . DIRECTORY_SEPARATOR . 'file.png');
-
-         // Assert a file does not exist
-         Storage::disk('file')->assertMissing('missing.jpg');
-
-
-         $fileSession = $this->call('GET', route('widget.widget.fileSession'), [
-             'id' => $widget->id,
-             'name' => 'File',
-         ]);
-         // Assert response status
-         $this->assertResponseStatus($fileSession->status());
-
-         $widget_delete = Widget::find($widget->id);
-
-         $fileSession = $this->call('delete',
-             route('widget.widget.fileDelete', ['uuid' => $widget_delete->value['File'][0]['qquuid']]), [
-                 'id' => $widget->id,
-                 'name' => 'File',
-             ]);
-
-         $this->assertResponseStatus($fileSession->status());
-
-         Storage::disk('file')->assertMissing(config('widgets.storage.slug') . DIRECTORY_SEPARATOR . date('FY') . DIRECTORY_SEPARATOR . 'file.png');*/

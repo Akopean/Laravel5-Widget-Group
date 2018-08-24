@@ -2,14 +2,14 @@
 
 namespace Akopean\widgets\Http\Controllers;
 
-use Akopean\widgets\Events\UpdateWidgetEvent;
+
 use Akopean\widgets\Models\Widget;
 use Akopean\widgets\Rules\ExistsGroup;
-use Akopean\widgets\Commands\UploadServerFile;
-use Akopean\widgets\Commands\DeleteServerFile;
+use Akopean\widgets\Commands\UploadServerFileCommand;
+use Akopean\widgets\Commands\DeleteServerFileCommand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Storage;
+use Validator;
 
 class WidgetController extends Controller
 {
@@ -29,41 +29,65 @@ class WidgetController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index()
     {
-        $request_group = $request->input('group');
-        $config_groups = $this->config['group'];
-        $collection = null;
-        $groups = null;
+        $collection = $this->widgets->All();
+        $groups = array_merge(['inactive' => 'Inactive'], $this->config['group']);
 
-        if ($request_group && array_key_exists($request_group, $config_groups)) {
-            $collection = $this->widgets->where(['group' => $request_group])->orwhere(['group' => 'inactive'])->get();
-            $groups = ['inactive' => 'Inactive', $request_group => $config_groups[$request_group]];
-        } else {
-            $collection = $this->widgets->All();
-            $groups = array_merge(['inactive' => 'Inactive'], $config_groups);
+        return view('widgets::widget.browse', compact('collection', 'groups'));
+    }
+
+    /**
+     * Get Widget Group
+     * @param string $select_group
+     * @throws \Exception
+     * @return \Illuminate\View\View
+     */
+    public function group($select_group)
+    {
+
+        $validate = Validator::make(['group' => $select_group], [
+            'group' => ['required', 'string', new ExistsGroup()],
+        ]);
+
+        if ($validate->fails()) {
+            abort(404);
         }
 
-        return view('widgets::widget.browse',
-            ['collection' => $collection, 'selected' => $request_group, 'groups' => $groups]);
+        $collection = $this->widgets->where(['group' => $select_group])->orwhere(['group' => 'inactive'])->get();
+        $groups = ['inactive' => 'Inactive', $select_group => $this->config['group'][$select_group]];
+
+        return view('widgets::widget.browse', compact('collection', 'groups'))->with(['selected' => $select_group]);
     }
 
     /**
      * Update Widget Data
      * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request)
     {
-        $validatedData = $request->validate([
-            'id' => 'required|integer',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'id' => 'required|integer',
+            ]);
 
-        $widget = $this->widgets->findOrFail($validatedData['id']);
+            $widget = $this->widgets->findOrFail($validatedData['id']);
 
-        event(new UpdateWidgetEvent($widget, $request));
+            $widget->value = array_merge((array)$widget->value, $request->post());
+
+            $widget->update();
+
+            return response()->json($widget->toJson(), 200);
+
+        } catch (\Exception $e) {
+
+            return Response::json([
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -72,6 +96,7 @@ class WidgetController extends Controller
      */
     public function create(Request $request)
     {
+
         $validatedData = $request->validate([
             'index' => 'required|integer',
             'group' => ['required', 'string', new ExistsGroup()],
@@ -88,6 +113,7 @@ class WidgetController extends Controller
         $widget->save();
 
         return response()->json($widget->toJson(), 201);
+
     }
 
     /**
@@ -122,7 +148,7 @@ class WidgetController extends Controller
 
             $widget = $this->widgets->findOrFail($validatedData['id']);
 
-            $this->dispatch(new UploadServerFile($widget, $request->all()));
+            $this->dispatch(new UploadServerFileCommand($widget, $request->all()));
 
             return Response::json([
                 'success' => true,
@@ -132,7 +158,7 @@ class WidgetController extends Controller
 
             return Response::json([
                 'message' => $e->getMessage(),
-                "success" => false
+                "success" => false,
             ], 400);
         }
     }
@@ -165,7 +191,9 @@ class WidgetController extends Controller
                 'name' => $value['qqfilename'],
                 'size' => $value['qqtotalfilessize'],
                 'url' => $value['paths']['original']['url'],
-                'thumbnailUrl' => isset($value['paths']['icon']['url']) ? $value['paths']['icon']['url'] : asset('vendor/Akopean/widgets/assets/css/fine_uploader_gif/file.png'),
+                'thumbnailUrl' => isset($value['paths']['icon']['url'])
+                    ? $value['paths']['icon']['url']
+                    : asset('vendor/Akopean/widgets/assets/css/fine_uploader_gif/file.png'),
                 'uuid' => $value['qquuid'],
             ];
         }
@@ -180,22 +208,22 @@ class WidgetController extends Controller
     public function fileDelete(Request $request, $uuid)
     {
         try {
-        $validatedData = $request->validate([
-            'id' => 'required|integer',
-            'name' => 'required|string',
-        ]);
+            $validatedData = $request->validate([
+                'id' => 'required|integer',
+                'name' => 'required|string',
+            ]);
 
-        $widget = $this->widgets->findOrFail($validatedData['id']);
+            $widget = $this->widgets->findOrFail($validatedData['id']);
 
-        $this->dispatch(new DeleteServerFile($widget, array_merge($request->all(), ['uuid' => $uuid])));
+            $this->dispatch(new DeleteServerFileCommand($widget, array_merge($request->all(), ['uuid' => $uuid])));
 
-        return response()->json(['success' => 'success'], 202);
+            return response()->json(['success' => 'success'], 202);
 
         } catch (\Exception $e) {
 
             return Response::json([
                 'message' => $e->getMessage(),
-                "success" => false
+                "success" => false,
             ], 400);
         }
 

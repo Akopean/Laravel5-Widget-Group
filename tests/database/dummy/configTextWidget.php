@@ -13,6 +13,22 @@ return [
                 'prepend' => '$',
                 'append' => '.kg',
             ],
+
+            'File' => [
+                'type' => 'file', //*
+                'title' => 'File', //* unique
+            ],
+            'Image' => [//* unique
+                'type' => 'image', //*
+                'title' => 'Image',
+                'rules' => [
+                    'mimes' => 'svg,png,jpg,jpeg',
+                    'size' => [
+                        'min' => 1,
+                        'max' => 2048,
+                    ],
+                ],
+            ],
         ],
     ],
 ];

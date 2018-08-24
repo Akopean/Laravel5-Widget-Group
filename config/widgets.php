@@ -72,7 +72,7 @@ return [
         // Valid file mimes and size for uploading
         //'rules' => 'required|mimes:jpeg,jpg,png,svg | max:8192',
         'rules' => [
-            'mimes' => 'jpg,jpeg,svg',
+            'mimes' => 'jpg,jpeg,svg,png,txt',
             'size' => [
                 'min' => 1,
                 'max' => 8192,
@@ -114,15 +114,14 @@ return [
     | Widgets Group
     |--------------------------------------------------------------------------
     |
+    | don`t use inactive group key
     |
     */
-
     'group' => [
         'leftSidebar' => 'Left Sidebar',
         'rightSidebar' => 'Right Sidebar',
         'footer' => 'Footer',
         'after_header' => 'After Header',
-
     ],
 
     /*
@@ -240,8 +239,6 @@ return [
                 'unique_file_id' => [
                     'type' => 'file', //*
                     'title' => 'File', //* unique
-                    'min' => '1',//MB
-                    'max' => '200',//MB
                    // 'multiple' => true, // default: false
                     'rules' => [
                         'mimes' => 'mp3,txt',
@@ -254,8 +251,6 @@ return [
                 'unique_image_id' => [//* unique
                     'type' => 'image', //*
                     'title' => 'Image',
-                    'min' => '1',//MB
-                    'max' => '200',//MB
                  //   'multiple' => true, // default: false
                     'rules' => [
                         'mimes' => 'svg,png,jpg,jpeg',

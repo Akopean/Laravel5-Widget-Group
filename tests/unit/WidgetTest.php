@@ -80,7 +80,7 @@ class WidgetTest extends TestCase
     public function testCanGetFieldOptions()
     {
         //Create
-        $options = $this->widget->getFieldOptions('Test Field');
+        $options = $this->widget->getFieldOptions('unique_text_id');
 
         //Assert
         $this->assertNotNull($options);

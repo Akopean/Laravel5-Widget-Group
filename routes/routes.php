@@ -17,6 +17,7 @@ Route::group(['as' => 'widget.'], function () {
     $namespacePrefix = '\\' . config('widgets.controllers.namespace') . '\\';
 
     Route::get('widget', ['uses' => $namespacePrefix . 'WidgetController@index'])->name('widget');
+    Route::get('widget/group/{select_group}', ['uses' => $namespacePrefix . 'WidgetController@group'])->name('widget.group');
     Route::post('widget', ['uses' => $namespacePrefix . 'WidgetController@update'])->name('widget.update');
 
     Route::post('widget/create', ['uses' => $namespacePrefix . 'WidgetController@create'])->name('widget.create');
