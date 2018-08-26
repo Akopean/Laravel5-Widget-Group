@@ -13,7 +13,6 @@
     @yield('page_header')
 <!-- START THE MAIN CONTENT HERE -->
     @yield('content')
-    <?php app('WidgetGroup')->run('leftSidebar'); ?>
 </div>
 @yield('javascript')
 </body>
