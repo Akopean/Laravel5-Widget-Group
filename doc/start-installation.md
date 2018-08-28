@@ -5,7 +5,7 @@
 After creating your new Laravel application you can include package with the following command: 
 
 ```php
-composer require akopean/widgets-group
+composer require akopean/widgets
 ```
 
 
@@ -46,12 +46,12 @@ php artisan migrate
 Somewhere in your routes file(s)
 
 ```php
- \Akopean\widgets\Widget::routes();
+ \Akopean\widgets\Widgets::routes();
 ```
 or
 ```php
 Route::group(['prefix' => 'widget'], function () {
-    \Akopean\widgets\Widget::routes();
+    \Akopean\widgets\Widgets::routes();
 });
 ```
 
