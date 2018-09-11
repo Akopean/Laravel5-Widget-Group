@@ -16,6 +16,7 @@
             <form method="post" class="widgetForm" enctype="multipart/form-data">
                 <input type="hidden" @if(!empty($id)) value="{{ $id }}" @endif name="id">
                 @foreach($value['fields'] as $key => $options)
+                    @if(!is_array($widget) && !empty($id)) {{ $widget['id'] = $id }} @endif
 
                     {!! app('widgets')->formField($name, $key, $options, $widget) !!}
 
